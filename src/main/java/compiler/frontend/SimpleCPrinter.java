@@ -69,17 +69,17 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitExprNode(SimpleCParser.ExprNodeContext ctx) {
-		return "(" + visit(ctx.expr1) + ")";
+		return "(" + visit(ctx.expr) + ")";
 	}
 
 	@Override
 	public String visitMulExpr(SimpleCParser.MulExprContext ctx) {
-		return visit(ctx.expr1) + " * " + visit(ctx.expr2);
+		return visit(ctx.lhs) + " * " + visit(ctx.rhs);
 	}
 
 	@Override
 	public String visitOppExpr(SimpleCParser.OppExprContext ctx) {
-		return "-" +visit(ctx.expr1);
+		return "-" +visit(ctx.expr);
 	}
 
 	@Override
@@ -89,12 +89,12 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitDivExpr(SimpleCParser.DivExprContext ctx) {
-		return visit(ctx.expr1) + " / " + visit(ctx.expr2);
+		return visit(ctx.lhs) + " / " + visit(ctx.rhs);
 	}
 
 	@Override
 	public String visitCmpLtExpr(SimpleCParser.CmpLtExprContext ctx) {
-		return visit(ctx.expr1) + " < " + visit(ctx.expr2);
+		return visit(ctx.lhs) + " < " + visit(ctx.rhs);
 	}
 
 	@Override
@@ -104,17 +104,17 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitCmpGtExpr(SimpleCParser.CmpGtExprContext ctx) {
-		return visit(ctx.expr1) + " > " + visit(ctx.expr2);
+		return visit(ctx.lhs) + " > " + visit(ctx.rhs);
 	}
 
 	@Override
 	public String visitSubExpr(SimpleCParser.SubExprContext ctx) {
-		return visit(ctx.expr1) + " - " + visit(ctx.expr2);
+		return visit(ctx.lhs) + " - " + visit(ctx.rhs);
 	}
 
 	@Override
 	public String visitAddExpr(SimpleCParser.AddExprContext ctx) {
-		return visit(ctx.expr1) + " + " + visit(ctx.expr2);
+		return visit(ctx.lhs) + " + " + visit(ctx.rhs);
 	}
 
 	@Override

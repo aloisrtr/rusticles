@@ -171,8 +171,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	
 	@Override
 	public BuilderResult visitAddExpr(AddExprContext ctx) {
-		BuilderResult res1 = ctx.expr1.accept(this);
-		BuilderResult res2 = ctx.expr2.accept(this);
+		BuilderResult res1 = ctx.lhs.accept(this);
+		BuilderResult res2 = ctx.rhs.accept(this);
 
 		IRAddInstruction instr = new IRAddInstruction(res1.value, res2.value);
 		currentBlock.addOperation(instr);
@@ -183,8 +183,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitSubExpr(SubExprContext ctx) {
 		
-		BuilderResult res1 = ctx.expr1.accept(this);
-		BuilderResult res2 = ctx.expr2.accept(this);
+		BuilderResult res1 = ctx.lhs.accept(this);
+		BuilderResult res2 = ctx.rhs.accept(this);
 
 		IRSubInstruction instr = new IRSubInstruction(res1.value, res2.value);
 		currentBlock.addOperation(instr);
@@ -195,8 +195,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitMulExpr(MulExprContext ctx) {
 		
-		BuilderResult res1 = ctx.expr1.accept(this);
-		BuilderResult res2 = ctx.expr2.accept(this);
+		BuilderResult res1 = ctx.lhs.accept(this);
+		BuilderResult res2 = ctx.rhs.accept(this);
 
 		IRMulInstruction instr = new IRMulInstruction(res1.value, res2.value);
 		currentBlock.addOperation(instr);
@@ -207,8 +207,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitDivExpr(DivExprContext ctx) {
 		
-		BuilderResult res1 = ctx.expr1.accept(this);
-		BuilderResult res2 = ctx.expr2.accept(this);
+		BuilderResult res1 = ctx.lhs.accept(this);
+		BuilderResult res2 = ctx.rhs.accept(this);
 
 		IRDivInstruction instr = new IRDivInstruction(res1.value, res2.value);
 		currentBlock.addOperation(instr);
@@ -219,8 +219,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitCmpGtExpr(CmpGtExprContext ctx) {
 		
-		BuilderResult res1 = ctx.expr1.accept(this);
-		BuilderResult res2 = ctx.expr2.accept(this);
+		BuilderResult res1 = ctx.lhs.accept(this);
+		BuilderResult res2 = ctx.rhs.accept(this);
 
 		IRCompareGtInstruction instr = new IRCompareGtInstruction(res1.value, res2.value);
 		currentBlock.addOperation(instr);
@@ -231,8 +231,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitCmpLtExpr(CmpLtExprContext ctx) {
 		
-		BuilderResult res1 = ctx.expr1.accept(this);
-		BuilderResult res2 = ctx.expr2.accept(this);
+		BuilderResult res1 = ctx.lhs.accept(this);
+		BuilderResult res2 = ctx.rhs.accept(this);
 
 		IRCompareLtInstruction instr = new IRCompareLtInstruction(res1.value, res2.value);
 		currentBlock.addOperation(instr);
@@ -243,7 +243,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitOppExpr(OppExprContext ctx) {
 		
-		BuilderResult res1 = ctx.expr1.accept(this);
+		BuilderResult res1 = ctx.expr.accept(this);
 
 		IRConstantInstruction<Integer> zeroCst = new IRConstantInstruction<Integer>(IRType.INT, 0);
 		IRSubInstruction instr = new IRSubInstruction(zeroCst.getResult(), res1.value);
@@ -256,7 +256,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitExprNode(ExprNodeContext ctx) {
 		
-		BuilderResult res1 = ctx.expr1.accept(this);
+		BuilderResult res1 = ctx.expr.accept(this);
 		
 		return new BuilderResult(false, null, null, res1.value);
 	}

@@ -93,7 +93,7 @@ La commande doit générer les fichiers java à partir de la description de la g
 
 **Question 1 :** Complétez la grammaire en ajoutant les différents *statements* dont vous aurez besoin. Il faut à minima pouvoir parser les fichiers `.sc` utilisés pour les tests. Il faudra donc ajouter les `if`, les `for`, les `while` et les définition, déclaration et assignation de variables.
  
- ** /!\ Attention /!\ ** essayez de ne pas trop changer le reste de la structure de la grammaire pour ne pas avoir à changer le code existant. Vous pourrez les faire si vous voulez lorsque vous comprendrez mieux les différents morceaux du compilateur existant. Le langage d'entrée est très restrictif et loin d'être pratique, mais ce n'est pas grave...
+**/!\ Attention :** essayez de ne pas trop changer le reste de la structure de la grammaire pour ne pas avoir à changer le code existant. Vous pourrez les faire si vous voulez lorsque vous comprendrez mieux les différents morceaux du compilateur existant. Le langage d'entrée est très restrictif et loin d'être pratique, mais ce n'est pas grave...
 
 **Question 2 :** Complétez le fichier `SimpleCPrinter.java` qui permet d'exporter l'AST généré par ANTLR sous forme de texte. L'objectif est d'être capable d'atteindre un point fixe sur tous les fichiers de tests (`original.sc` -> AST -> `printed.sc` -> AST -> `printed2.sc`).
 

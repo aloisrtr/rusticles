@@ -1,0 +1,14 @@
+lint:
+	cargo clippy
+
+test:
+	cargo test
+
+build: lint test
+	cargo build
+
+release: lint test
+	cargo build --release
+
+compile source: lint test release
+	cargo run --release -- {{source}}

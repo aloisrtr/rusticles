@@ -85,7 +85,7 @@ public class Compiler {
 
     public static void main(String[] args) {
     	System.out.println("**** Parsing and printing the entry file : ");
-		String content = readFile("src/test/resources/hello.sc");
+		String content = readFile(args[0]);
     	ParseTree tree = Compiler.parse(content);
     	SimpleCPrinter astPrinter = new SimpleCPrinter();
     	System.out.println(astPrinter.visit(tree));

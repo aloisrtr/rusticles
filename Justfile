@@ -1,5 +1,9 @@
-rust:
-	echo 'Running the rust version of the commands!'
+build:
+	gradle :generateGrammarSource
+	gradle :compileJava
+	gradle :processResources
+	gradle :classes
+	gradle java :main.compiler.Compiler
 
-java:
-	echo 'Running the java version of the commands :('
+compile source: build
+	

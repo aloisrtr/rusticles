@@ -1,8 +1,0 @@
-[package]
-name = "SimpleC"
-version = "0.1.0"
-edition = "2021"
-authors = ["Aloïs Rautureau <alois.rautureau@ens-rennes.fr>", "Paul Adam <paul.adam@ens-rennes.fr>"]
-
-[dependencies]
-pest = "2.2.7"

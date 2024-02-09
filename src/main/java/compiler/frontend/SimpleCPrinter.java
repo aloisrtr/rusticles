@@ -50,9 +50,9 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitBlockStatement(SimpleCParser.BlockStatementContext ctx) {
-		String result = "{\n";
+		StringBuilder result = new StringBuilder("{\n");
 		for (ParseTree child : ctx.statements) {
-			result += visit(child);
+			result.append(visit(child));
 		}
 		return result + "}";
 	}
@@ -119,14 +119,42 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitFunctionCall(SimpleCParser.FunctionCallContext ctx) {
-		String result = ctx.name.getText() + "(";
-		if (ctx.args.size() > 1){
-			result += visit(ctx.args.get(0));
+		StringBuilder result = new StringBuilder(ctx.name.getText() + "(");
+		if (!ctx.args.isEmpty()) {
+			result.append(visit(ctx.args.getFirst()));
 		}
 		for (int child = 1; child < ctx.args.size(); child++) {
-			result += ", " + visit(ctx.args.get(child));
+			result.append(", ").append(visit(ctx.args.get(child)));
 		}
 		return result + ")";
 	}
 
+	@Override
+	public java.lang.String visitVariableAssignation(SimpleCParser.VariableAssignationContext ctx) {
+		return ctx.id.getText() + " = " + visit(ctx.expr) + ";";
+	}
+
+	@Override
+	public String visitVariableDefinition(SimpleCParser.VariableDefinitionContext ctx) {
+		return ctx.t.getText() + " " + ctx.id.getText() + " = " + visit(ctx.expr) + ";";
+	}
+
+	@Override
+	public String visitIfStatement(SimpleCParser.IfStatementContext ctx) {
+		String result = "if (" + visit(ctx.cond) + ")" + visit(ctx.if_statement);
+		if (ctx.follow_statement != null) {
+			result += " else " + visit(ctx.follow_statement);
+		}
+		return result + "\n";
+	}
+
+	@Override
+	public String visitForLoop(SimpleCParser.ForLoopContext ctx) {
+		return "for (" + visit(ctx.declarations) + "; " + visit(ctx.stop_condition) + "; " + visit(ctx.continue_expressions) + ")" + visit(ctx.inner);
+	}
+
+	@Override
+	public String visitWhileLoop(SimpleCParser.WhileLoopContext ctx) {
+		return "while (" + visit(ctx.condition) + ")" + visit(ctx.inner);
+	}
 }

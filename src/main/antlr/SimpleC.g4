@@ -21,7 +21,7 @@ type : 'void'  	#VoidType
 	| 'int' 	#IntType
 	| 'unsigned int'  	#UintType;
 
-statement : blockStatement | expressionStatement | returnStatement;
+statement : blockStatement | expressionStatement | returnStatement | variableDefinition | variableAssignation | ifStatement | forLoop | whileLoop;
 
 blockStatement : '{' statements+=statement* '}';
 
@@ -30,8 +30,16 @@ assignVar : name=IDENTIFIER '=' statement ';';
 
 if : 'if' cond=expression inner=statement;
 //TODO: add statements for var def/var decl/var assign/if/for/while
+variableDefinition : t=type id=IDENTIFIER ('=' expr=expression)? ';' ;
+variableAssignation : id=IDENTIFIER '=' expr=expression ';' ;
 
-returnStatement : 'return' expr=expression?';';
+ifStatement : 'if' '(' cond=expression ')' if_statement=blockStatement  ('else' follow_statement=ifFollowUp)? ;
+ifFollowUp : blockStatement | ifStatement ;
+
+forLoop : 'for' '(' declarations=variableDefinition* ';' stop_condition=expression ';' continue_expressions=statement* ')' inner=blockStatement ;
+whileLoop : 'while' '(' condition=expression ')' inner=blockStatement ;
+
+returnStatement : 'return' expr=expression? ';';
 
 expressionStatement : expr=expression ';';
 

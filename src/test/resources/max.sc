@@ -1,7 +1,7 @@
-int max(int a, int b) {
-    if (a > b) {
-        return a;
+fun max(a: int, b: int): int {
+    if a > b {
+        a
     } else {
-        return b;
+        b
     }
 }

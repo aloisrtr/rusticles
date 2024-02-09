@@ -1,7 +1,7 @@
-int sum(int n) {
-    int result = 0;
-    for (int i = 0; i < n; i = i + 1) {
-        result = result + i;
+fun sum(n: int): int {
+    var result = 0;
+    for (int i = 0; i < n; i += 1) {
+        result += i;
     }
-    return result;
+    result
 }

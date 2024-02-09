@@ -1,7 +1,7 @@
-int power(int base, int exponent) {
-    if (exponent > 0) {
-        return base * power(base, exponent - 1);
+fun power(base: int, exponent: int): int {
+    if exponent > 0 {
+        base * power(base, exponent - 1)
     } else {
-        return 1;
+        1
     }
 }

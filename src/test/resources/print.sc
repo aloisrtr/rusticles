@@ -1,7 +1,7 @@
-int main(){
-    for (int i = 0; i<10; i=i+1){
-        printChar(65+i);
+fun main(): int {
+    for (char c = 'a'; c < 'j'; c += 1){
+        printChar(c);
     }
-    return 0;
+    0
 }
 

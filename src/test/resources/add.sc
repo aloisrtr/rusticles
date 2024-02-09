@@ -1,3 +1,3 @@
-int add(int a, int b) {
-    return a + b;
+fun add(a: int, b: int): int {
+    a + b
 }

@@ -5,10 +5,11 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import antlr.SimpleCBaseVisitor;
 import antlr.SimpleCParser;
+import antlr.SimpleCParser.NegExprContext;
 import antlr.SimpleCParser.AddExprContext;
-import antlr.SimpleCParser.BlockStatementContext;
-import antlr.SimpleCParser.CmpGtExprContext;
-import antlr.SimpleCParser.CmpLtExprContext;
+import antlr.SimpleCParser.BlockContext;
+import antlr.SimpleCParser.GthExprContext;
+import antlr.SimpleCParser.LthExprContext;
 import antlr.SimpleCParser.DivExprContext;
 import antlr.SimpleCParser.ExprNodeContext;
 import antlr.SimpleCParser.ExpressionContext;
@@ -19,8 +20,7 @@ import antlr.SimpleCParser.IdNodeContext;
 import antlr.SimpleCParser.IntNodeContext;
 import antlr.SimpleCParser.IntTypeContext;
 import antlr.SimpleCParser.MulExprContext;
-import antlr.SimpleCParser.OppExprContext;
-import antlr.SimpleCParser.ReturnStatementContext;
+import antlr.SimpleCParser.ReturnContext;
 import antlr.SimpleCParser.StatementContext;
 import antlr.SimpleCParser.SubExprContext;
 import antlr.SimpleCParser.TypeContext;
@@ -88,7 +88,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRBlock entryBlock = createBlock(func);
 		
 		//Recursive call to the body to get its IR
-		BuilderResult body = visitBlockStatement(ctx.body); 
+		BuilderResult body = visitBlock(ctx.body);
 		
 		//We connect the result with the entry block and seal the body
 		entryBlock.addTerminator(new IRGoto(body.entry));
@@ -103,7 +103,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 	
 	@Override
-	public BuilderResult visitBlockStatement(BlockStatementContext ctx) {
+	public BuilderResult visitBlock(BlockContext ctx) {
 		
 		//We create a new block, save it as in point and current point
 		IRBlock in =  createBlock(currentFunction);
@@ -131,7 +131,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	 ****************************************************************************/ 
 	
 	@Override
-	public BuilderResult visitReturnStatement(ReturnStatementContext ctx) {
+	public BuilderResult visitReturn(ReturnContext ctx) {
 		BuilderResult res = this.visit(ctx.expr);
 		IRReturn newInstr = new IRReturn(res.value);
 		currentBlock.addOperation(newInstr);
@@ -217,7 +217,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 	
 	@Override
-	public BuilderResult visitCmpGtExpr(CmpGtExprContext ctx) {
+	public BuilderResult visitGthExpr(GthExprContext ctx) {
 		
 		BuilderResult res1 = ctx.lhs.accept(this);
 		BuilderResult res2 = ctx.rhs.accept(this);
@@ -229,7 +229,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 	
 	@Override
-	public BuilderResult visitCmpLtExpr(CmpLtExprContext ctx) {
+	public BuilderResult visitLthExpr(LthExprContext ctx) {
 		
 		BuilderResult res1 = ctx.lhs.accept(this);
 		BuilderResult res2 = ctx.rhs.accept(this);
@@ -241,7 +241,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 	
 	@Override
-	public BuilderResult visitOppExpr(OppExprContext ctx) {
+	public BuilderResult visitNegExpr(NegExprContext ctx) {
 		
 		BuilderResult res1 = ctx.expr.accept(this);
 
@@ -279,11 +279,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRValue val = null; //TODO: find the correct value in SSA form
 
 		return new BuilderResult(false, null, null, val);	
-	}
-	
-	@Override
-	public BuilderResult visitExpressionStatement(SimpleCParser.ExpressionStatementContext ctx) {
-		return visit(ctx.expr);
 	}
 
 	private IRBlock createBlock(IRFunction f) {

@@ -3,30 +3,40 @@ package compiler.frontend;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.Optional;
+import java.util.Vector;
+
+// typedef VariableId = String;
 
 public class SymbolTable {
-	private HashMap<String, SymbolTableEntry> table;
-	private List<SymbolTable> children;
-	
+	HashMap<VariableId, VariableInfo> symbols;
+	Vector<SymbolTable> children;
 	public SymbolTable() {
-		//constructor
+		children = new Vector<SymbolTable>();
+		symbols = new HashMap<VariableId, VariableInfo>();
 	}
-	
-	public SymbolTable initializeScope(ParserRuleContext ctx) {
 
-		return null;
+	public SymbolTable initializeScope(ParserRuleContext ctx) {
+		return new SymbolTable();
 	}
-	
-	public void finalizeScope() {
+
+	/// Visit BLOCK
+	/// symbol_table = initialize(ctx);
+	/// Remplit en parcourant les fils du block... (args : mut symbol_table)
+	/// finalize(symbol_table);
+	public void finalizeScope(SymbolTable symbolTable) {
+		children.add(symbolTable);
 	}
-	
-	public SymbolTableEntry insert(String name) {
-		this.table.put(name, new SymbolTableEntry());
-		return this.table.get(name);
+
+	public void insert(String name) {
+		symbols.put(new VariableId(name), new VariableInfo());
 	}
-	
-	public SymbolTableEntry lookup(String name) {
-		return this.table.get(name);
+
+	public Optional<VariableInfo> lookup(String name) {
+		VariableId id = new VariableId(name);
+		if (symbols.containsKey(id)) {
+			return Optional.of(symbols.get(id));
+		}
+		return Optional.empty();
 	}
 }

@@ -275,10 +275,10 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitIdNode(IdNodeContext ctx) {
 		//Key function for having SSA working properly
-		SymbolTableEntry entry = symbolTable.lookup(ctx.name.getText());
+		//SymbolTableEntry entry = symbolTable.lookup(ctx.name.getText());
 		IRValue val = null; //TODO: find the correct value in SSA form
 
-		return new BuilderResult(false, null, null, val);	
+		return new BuilderResult(false, null, null, val);
 	}
 
 	private IRBlock createBlock(IRFunction f) {

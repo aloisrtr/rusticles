@@ -1,7 +1,5 @@
 // Generated from java-escape by ANTLR 4.11.1
-
-    package antlr;
-
+ package antlr; 
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -31,25 +29,25 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionArgument(SimpleCParser.FunctionArgumentContext ctx) { }
+	@Override public void enterFunDef(SimpleCParser.FunDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionArgument(SimpleCParser.FunctionArgumentContext ctx) { }
+	@Override public void exitFunDef(SimpleCParser.FunDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionDefinition(SimpleCParser.FunctionDefinitionContext ctx) { }
+	@Override public void enterFunArg(SimpleCParser.FunArgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionDefinition(SimpleCParser.FunctionDefinitionContext ctx) { }
+	@Override public void exitFunArg(SimpleCParser.FunArgContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -103,18 +101,6 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCharType(SimpleCParser.CharTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCharType(SimpleCParser.CharTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterArrayType(SimpleCParser.ArrayTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -122,18 +108,6 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitArrayType(SimpleCParser.ArrayTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStatement(SimpleCParser.StatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStatement(SimpleCParser.StatementContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -151,97 +125,25 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionCall(SimpleCParser.FunctionCallContext ctx) { }
+	@Override public void enterIfstatementExpr(SimpleCParser.IfstatementExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionCall(SimpleCParser.FunctionCallContext ctx) { }
+	@Override public void exitIfstatementExpr(SimpleCParser.IfstatementExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReturn(SimpleCParser.ReturnContext ctx) { }
+	@Override public void enterWhileExpr(SimpleCParser.WhileExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitReturn(SimpleCParser.ReturnContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterVariableDefinition(SimpleCParser.VariableDefinitionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVariableDefinition(SimpleCParser.VariableDefinitionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterVariableAssignation(SimpleCParser.VariableAssignationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVariableAssignation(SimpleCParser.VariableAssignationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIfStatement(SimpleCParser.IfStatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIfStatement(SimpleCParser.IfStatementContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIfFollowUp(SimpleCParser.IfFollowUpContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIfFollowUp(SimpleCParser.IfFollowUpContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterForLoop(SimpleCParser.ForLoopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitForLoop(SimpleCParser.ForLoopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterWhileLoop(SimpleCParser.WhileLoopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitWhileLoop(SimpleCParser.WhileLoopContext ctx) { }
+	@Override public void exitWhileExpr(SimpleCParser.WhileExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -259,25 +161,25 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunctionCallNode(SimpleCParser.FunctionCallNodeContext ctx) { }
+	@Override public void enterIdExpr(SimpleCParser.IdExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunctionCallNode(SimpleCParser.FunctionCallNodeContext ctx) { }
+	@Override public void exitIdExpr(SimpleCParser.IdExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdNode(SimpleCParser.IdNodeContext ctx) { }
+	@Override public void enterUintExpr(SimpleCParser.UintExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIdNode(SimpleCParser.IdNodeContext ctx) { }
+	@Override public void exitUintExpr(SimpleCParser.UintExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -319,37 +221,13 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprNode(SimpleCParser.ExprNodeContext ctx) { }
+	@Override public void enterVarDefExpr(SimpleCParser.VarDefExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprNode(SimpleCParser.ExprNodeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterReturnNode(SimpleCParser.ReturnNodeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitReturnNode(SimpleCParser.ReturnNodeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIntNode(SimpleCParser.IntNodeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIntNode(SimpleCParser.IntNodeContext ctx) { }
+	@Override public void exitVarDefExpr(SimpleCParser.VarDefExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -362,18 +240,6 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDivExpr(SimpleCParser.DivExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterUintNode(SimpleCParser.UintNodeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitUintNode(SimpleCParser.UintNodeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -398,6 +264,102 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitGthExpr(SimpleCParser.GthExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunCallExpr(SimpleCParser.FunCallExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunCallExpr(SimpleCParser.FunCallExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReturnExpr(SimpleCParser.ReturnExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReturnExpr(SimpleCParser.ReturnExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterForExpr(SimpleCParser.ForExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitForExpr(SimpleCParser.ForExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntExpr(SimpleCParser.IntExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntExpr(SimpleCParser.IntExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParenExpr(SimpleCParser.ParenExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParenExpr(SimpleCParser.ParenExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVarAssignExpr(SimpleCParser.VarAssignExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVarAssignExpr(SimpleCParser.VarAssignExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIfExpr(SimpleCParser.IfExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIfExpr(SimpleCParser.IfExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIfFollowUp(SimpleCParser.IfFollowUpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIfFollowUp(SimpleCParser.IfFollowUpContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -11,52 +11,25 @@ import compiler.frontend.IRBuilder;
 import compiler.frontend.SimpleCPrinter;
 import ir.core.IRTopLevel;
 
+import java.io.File;
+
 class testFrontend {
 
-	private void testPattern(String path) {
+	private void testFrontend(String path) {
 		String contentInit = Compiler.readFile(path);
 		ParseTree tree = Compiler.parse(contentInit);
 		IRTopLevel top = Compiler.frontend(tree);
 		assert(true);//Ok if no exception before
 	}
-	
 	@Test
-	void testParserAdd() {
-		testPattern("src/test/resources/add.sc");
-	}
-
-	@Test
-	void testParserFact() {
-		testPattern("src/test/resources/add.sc");
-	}
-	
-	@Test
-	void testParserHello() {
-		testPattern("src/test/resources/hello.sc");
-	}
-	
-	@Test
-	void testParserMax() {
-		testPattern("src/test/resources/max.sc");
-	}
-	
-	@Test
-	void testParserPower() {
-		testPattern("src/test/resources/power.sc");
-	}
-
-	@Test
-	void testParserSum() {
-		testPattern("src/test/resources/sum.sc");
-	}
-	
-	@Test
-	void testParserFunctions() {
-		testPattern("src/test/resources/functions.sc");
-	}
-	
-	@Test
-	void testParserPrint() {
-		testPattern("src/test/resources/print.sc");
+	void testAllFilesFrontend() {
+		String path = "src/test/resources";
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+		for (File file : listOfFiles) {
+			if (file.isFile()) {
+				testFrontend(file.getPath());
+			}
+		}
 	}
 }

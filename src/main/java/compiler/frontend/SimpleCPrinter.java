@@ -14,8 +14,8 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 		return result.toString();
 	}
 
-	public String visitFunctionDefinition(SimpleCParser.FunctionDefinitionContext ctx) {
-		StringBuilder result = new StringBuilder("fun " + ctx.name.getText() + "(");
+	public String visitFunDef(SimpleCParser.FunDefContext ctx) {
+		StringBuilder result = new StringBuilder("fn " + ctx.name.getText() + "(");
 
 		if (!ctx.args.isEmpty()) {
 			int num_args = ctx.args.size();
@@ -25,11 +25,10 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 		}
 		result.append("): ");
 		result.append(this.visit(ctx.returnType));
-		return result + "\n" + this.visit(ctx.body) + "\n";
-
+		return result + this.visit(ctx.body);
 	}
 
-	public String visitFunctionArgument(SimpleCParser.FunctionArgumentContext ctx) {
+	public String visitFunArg(SimpleCParser.FunArgContext ctx) {
 		return ctx.name.getText() + ": " + this.visit(ctx.argType);
 	}
 
@@ -42,15 +41,11 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	}
 
 	public String visitUintType(SimpleCParser.UintTypeContext ctx) {
-		return "unsigned int";
+		return "uint";
 	}
 
 	public String visitBoolType(SimpleCParser.BoolTypeContext ctx) {
 		return "bool";
-	}
-
-	public String visitCharType(SimpleCParser.CharTypeContext ctx) {
-		return "char";
 	}
 
 	public String visitArrayType(SimpleCParser.ArrayTypeContext ctx) {
@@ -59,80 +54,94 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitBlock(SimpleCParser.BlockContext ctx) {
-		StringBuilder result = new StringBuilder("{\n");
+		StringBuilder body = new StringBuilder();
 		for (ParseTree child : ctx.statements) {
-			result.append(visit(child));
-			result.append(";\n");
+			body.append(visit(child));
+			body.append(";");
 		}
-		if (ctx.lastExpression != null) {
-			result.append(visit(ctx.lastExpression));
-			result.append("\n");
+		if (ctx.lastexpr != null) {
+			if (!ctx.statements.isEmpty()) {
+				body.append("\n");
+			}
+			body.append(visit(ctx.lastexpr));
 		}
-		return result + "}";
+		return "{\n" + body.toString().replaceAll("(?m)^", "\t") + "\n}";
 	}
-
 	@Override
-	public String visitFunctionCall(SimpleCParser.FunctionCallContext ctx) {
-		StringBuilder result = new StringBuilder(ctx.name.getText() + " (");
-		for (ParseTree arg : ctx.args) {
-			result.append(visit(arg));
-			result.append(", ");
+	public String visitIfExpr(SimpleCParser.IfExprContext ctx) {
+		StringBuilder result = new StringBuilder("if (" + visit(ctx.cond) + ") " + visit(ctx.ifBody));
+		if (ctx.elseBody!= null) {
+			result.append(" else ");
+			result.append(visit(ctx.elseBody));
 		}
 		return result.toString();
 	}
 
 	@Override
-	public String visitReturn(SimpleCParser.ReturnContext ctx) {
-		return "return " + visit(ctx.expr);
+	public String visitForExpr(SimpleCParser.ForExprContext ctx) {
+        return "for (" +
+				ctx.name.getText() +
+                " in " +
+				visit(ctx.begin) +
+                ".." +
+                visit(ctx.end) +
+                ")" +
+                visit(ctx.body);
 	}
 
 	@Override
-	public String visitVariableDefinition(SimpleCParser.VariableDefinitionContext ctx) {
-		StringBuilder result = new StringBuilder("var " + ctx.name.getText());
+	public String visitWhileExpr(SimpleCParser.WhileExprContext ctx) {
+		return "while (" + visit(ctx.condition) + ") " + visit(ctx.body);
+	}
+	@Override
+	public String visitFunCallExpr(SimpleCParser.FunCallExprContext ctx) {
+		StringBuilder result = new StringBuilder(ctx.name.getText() + " (");
+		int num_args = ctx.args.size();
+		for (ParseTree c : ctx.args.subList(0, num_args - 1))
+			result.append(this.visit(c)).append(", ");
+		result.append(this.visit(ctx.args.get(num_args - 1)));
+
+		return result + ")";
+	}
+
+	@Override
+	public String visitVarDefExpr(SimpleCParser.VarDefExprContext ctx) {
+		StringBuilder result = new StringBuilder("let " + ctx.name.getText());
 		if (ctx.t != null) {
 			result.append(": ");
 			result.append(visit(ctx.t));
 		}
 		result.append(" = ");
-		return result + visit(ctx.expr);
+		return result + visit(ctx.body);
 	}
 
 	@Override
-	public String visitVariableAssignation(SimpleCParser.VariableAssignationContext ctx) {
-		return ctx.name.getText() + " = " + visit(ctx.expr);
+	public String visitVarAssignExpr(SimpleCParser.VarAssignExprContext ctx) {
+		return ctx.name.getText() + " = " + visit(ctx.body);
 	}
 
 	@Override
-	public String visitIfStatement(SimpleCParser.IfStatementContext ctx) {
-		StringBuilder result = new StringBuilder("if " + visit(ctx.cond) + " " + visit(ctx.inner));
-		if (ctx.followStatement!= null) {
-			result.append(" else ");
-			result.append(visit(ctx.followStatement));
-		}
-		return result.toString();
+	public String visitReturnExpr(SimpleCParser.ReturnExprContext ctx) {
+		return "return " + visit(ctx.body);
 	}
 
 	@Override
-	public String visitForLoop(SimpleCParser.ForLoopContext ctx) {
-		StringBuilder result = new StringBuilder("for ");
-		for (ParseTree declaration : ctx.declarations) {
-			result.append(visit(declaration));
-			result.append(", ");
-		}
-		result.append(" until ");
-		result.append(visit(ctx.stopCondition));
-		result.append(" with ");
-		for (ParseTree expression : ctx.continueExpressions) {
-			result.append(visit(expression));
-			result.append(", ");
-		}
-		result.append(visit(ctx.inner));
-		return result.toString();
+	public String visitNegExpr(SimpleCParser.NegExprContext ctx) {
+		return "-" + visit(ctx.body);
 	}
 
 	@Override
-	public String visitWhileLoop(SimpleCParser.WhileLoopContext ctx) {
-		return "while " + visit(ctx.condition) + " " + visit(ctx.inner);
+	public String visitIdExpr(SimpleCParser.IdExprContext ctx) {
+		return ctx.name.getText();
+	}
+	@Override
+	public String visitIntExpr(SimpleCParser.IntExprContext ctx) {
+		return ctx.getText();
+	}
+
+	@Override
+	public String visitUintExpr(SimpleCParser.UintExprContext ctx) {
+		return ctx.getText();
 	}
 
 	@Override
@@ -163,30 +172,5 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	@Override
 	public String visitGthExpr(SimpleCParser.GthExprContext ctx) {
 		return visit(ctx.lhs) + " > " + visit(ctx.rhs);
-	}
-
-	@Override
-	public String visitNegExpr(SimpleCParser.NegExprContext ctx) {
-		return "-" +visit(ctx.expr);
-	}
-
-	@Override
-	public String visitExprNode(SimpleCParser.ExprNodeContext ctx) {
-		return "(" + visit(ctx.expr) + ")";
-	}
-
-	@Override
-	public String visitIdNode(SimpleCParser.IdNodeContext ctx) {
-		return ctx.name.getText();
-	}
-
-	@Override
-	public String visitIntNode(SimpleCParser.IntNodeContext ctx) {
-		return ctx.getText();
-	}
-
-	@Override
-	public String visitUintNode(SimpleCParser.UintNodeContext ctx) {
-		return ctx.getText();
 	}
 }

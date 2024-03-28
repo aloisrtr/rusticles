@@ -14,7 +14,7 @@ irType : 'void'  	#VoidType
 	| 'INT' 	#IRINT
 	| 'UINT'  	#IRUINT
 	| 'CHAR'    #IRCHAR
-	| 'FLOAT'    #IRFLOAT
+	| 'FLOAT'   #IRFLOAT
 	| 'ADDR'    #IRADDR;
 	
 irTop : 

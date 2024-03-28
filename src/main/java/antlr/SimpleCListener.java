@@ -1,7 +1,5 @@
 // Generated from java-escape by ANTLR 4.11.1
-
-    package antlr;
-
+ package antlr; 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -20,25 +18,25 @@ public interface SimpleCListener extends ParseTreeListener {
 	 */
 	void exitTranslationUnit(SimpleCParser.TranslationUnitContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#functionArgument}.
+	 * Enter a parse tree produced by {@link SimpleCParser#funDef}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionArgument(SimpleCParser.FunctionArgumentContext ctx);
+	void enterFunDef(SimpleCParser.FunDefContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#functionArgument}.
+	 * Exit a parse tree produced by {@link SimpleCParser#funDef}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionArgument(SimpleCParser.FunctionArgumentContext ctx);
+	void exitFunDef(SimpleCParser.FunDefContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#functionDefinition}.
+	 * Enter a parse tree produced by {@link SimpleCParser#funArg}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionDefinition(SimpleCParser.FunctionDefinitionContext ctx);
+	void enterFunArg(SimpleCParser.FunArgContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#functionDefinition}.
+	 * Exit a parse tree produced by {@link SimpleCParser#funArg}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionDefinition(SimpleCParser.FunctionDefinitionContext ctx);
+	void exitFunArg(SimpleCParser.FunArgContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code VoidType}
 	 * labeled alternative in {@link SimpleCParser#type}.
@@ -88,18 +86,6 @@ public interface SimpleCListener extends ParseTreeListener {
 	 */
 	void exitBoolType(SimpleCParser.BoolTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code CharType}
-	 * labeled alternative in {@link SimpleCParser#type}.
-	 * @param ctx the parse tree
-	 */
-	void enterCharType(SimpleCParser.CharTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code CharType}
-	 * labeled alternative in {@link SimpleCParser#type}.
-	 * @param ctx the parse tree
-	 */
-	void exitCharType(SimpleCParser.CharTypeContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code ArrayType}
 	 * labeled alternative in {@link SimpleCParser#type}.
 	 * @param ctx the parse tree
@@ -112,16 +98,6 @@ public interface SimpleCListener extends ParseTreeListener {
 	 */
 	void exitArrayType(SimpleCParser.ArrayTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatement(SimpleCParser.StatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatement(SimpleCParser.StatementContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link SimpleCParser#block}.
 	 * @param ctx the parse tree
 	 */
@@ -132,55 +108,231 @@ public interface SimpleCListener extends ParseTreeListener {
 	 */
 	void exitBlock(SimpleCParser.BlockContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#functionCall}.
+	 * Enter a parse tree produced by the {@code IfstatementExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterFunctionCall(SimpleCParser.FunctionCallContext ctx);
+	void enterIfstatementExpr(SimpleCParser.IfstatementExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#functionCall}.
+	 * Exit a parse tree produced by the {@code IfstatementExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitFunctionCall(SimpleCParser.FunctionCallContext ctx);
+	void exitIfstatementExpr(SimpleCParser.IfstatementExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#return}.
+	 * Enter a parse tree produced by the {@code WhileExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterReturn(SimpleCParser.ReturnContext ctx);
+	void enterWhileExpr(SimpleCParser.WhileExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#return}.
+	 * Exit a parse tree produced by the {@code WhileExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitReturn(SimpleCParser.ReturnContext ctx);
+	void exitWhileExpr(SimpleCParser.WhileExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#variableDefinition}.
+	 * Enter a parse tree produced by the {@code MulExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterVariableDefinition(SimpleCParser.VariableDefinitionContext ctx);
+	void enterMulExpr(SimpleCParser.MulExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#variableDefinition}.
+	 * Exit a parse tree produced by the {@code MulExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitVariableDefinition(SimpleCParser.VariableDefinitionContext ctx);
+	void exitMulExpr(SimpleCParser.MulExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#variableAssignation}.
+	 * Enter a parse tree produced by the {@code IdExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterVariableAssignation(SimpleCParser.VariableAssignationContext ctx);
+	void enterIdExpr(SimpleCParser.IdExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#variableAssignation}.
+	 * Exit a parse tree produced by the {@code IdExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitVariableAssignation(SimpleCParser.VariableAssignationContext ctx);
+	void exitIdExpr(SimpleCParser.IdExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#ifStatement}.
+	 * Enter a parse tree produced by the {@code UintExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterIfStatement(SimpleCParser.IfStatementContext ctx);
+	void enterUintExpr(SimpleCParser.UintExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#ifStatement}.
+	 * Exit a parse tree produced by the {@code UintExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitIfStatement(SimpleCParser.IfStatementContext ctx);
+	void exitUintExpr(SimpleCParser.UintExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code SubExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSubExpr(SimpleCParser.SubExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SubExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSubExpr(SimpleCParser.SubExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NegExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNegExpr(SimpleCParser.NegExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NegExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNegExpr(SimpleCParser.NegExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AddExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAddExpr(SimpleCParser.AddExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AddExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAddExpr(SimpleCParser.AddExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code VarDefExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarDefExpr(SimpleCParser.VarDefExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code VarDefExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarDefExpr(SimpleCParser.VarDefExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DivExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterDivExpr(SimpleCParser.DivExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DivExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitDivExpr(SimpleCParser.DivExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code LthExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterLthExpr(SimpleCParser.LthExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LthExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitLthExpr(SimpleCParser.LthExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code GthExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterGthExpr(SimpleCParser.GthExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GthExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitGthExpr(SimpleCParser.GthExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FunCallExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunCallExpr(SimpleCParser.FunCallExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FunCallExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunCallExpr(SimpleCParser.FunCallExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ReturnExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnExpr(SimpleCParser.ReturnExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ReturnExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnExpr(SimpleCParser.ReturnExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterForExpr(SimpleCParser.ForExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitForExpr(SimpleCParser.ForExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IntExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntExpr(SimpleCParser.IntExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IntExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntExpr(SimpleCParser.IntExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ParenExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterParenExpr(SimpleCParser.ParenExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ParenExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitParenExpr(SimpleCParser.ParenExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code VarAssignExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarAssignExpr(SimpleCParser.VarAssignExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code VarAssignExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarAssignExpr(SimpleCParser.VarAssignExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link SimpleCParser#ifExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfExpr(SimpleCParser.IfExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimpleCParser#ifExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfExpr(SimpleCParser.IfExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimpleCParser#ifFollowUp}.
 	 * @param ctx the parse tree
@@ -191,180 +343,4 @@ public interface SimpleCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIfFollowUp(SimpleCParser.IfFollowUpContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#forLoop}.
-	 * @param ctx the parse tree
-	 */
-	void enterForLoop(SimpleCParser.ForLoopContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#forLoop}.
-	 * @param ctx the parse tree
-	 */
-	void exitForLoop(SimpleCParser.ForLoopContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link SimpleCParser#whileLoop}.
-	 * @param ctx the parse tree
-	 */
-	void enterWhileLoop(SimpleCParser.WhileLoopContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link SimpleCParser#whileLoop}.
-	 * @param ctx the parse tree
-	 */
-	void exitWhileLoop(SimpleCParser.WhileLoopContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code MulExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterMulExpr(SimpleCParser.MulExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code MulExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitMulExpr(SimpleCParser.MulExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code FunctionCallNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunctionCallNode(SimpleCParser.FunctionCallNodeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code FunctionCallNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunctionCallNode(SimpleCParser.FunctionCallNodeContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code IdNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterIdNode(SimpleCParser.IdNodeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code IdNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitIdNode(SimpleCParser.IdNodeContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code SubExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterSubExpr(SimpleCParser.SubExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code SubExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitSubExpr(SimpleCParser.SubExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code NegExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterNegExpr(SimpleCParser.NegExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code NegExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitNegExpr(SimpleCParser.NegExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code AddExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterAddExpr(SimpleCParser.AddExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code AddExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitAddExpr(SimpleCParser.AddExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ExprNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprNode(SimpleCParser.ExprNodeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ExprNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprNode(SimpleCParser.ExprNodeContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ReturnNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterReturnNode(SimpleCParser.ReturnNodeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ReturnNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitReturnNode(SimpleCParser.ReturnNodeContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code IntNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterIntNode(SimpleCParser.IntNodeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code IntNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitIntNode(SimpleCParser.IntNodeContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code DivExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterDivExpr(SimpleCParser.DivExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code DivExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitDivExpr(SimpleCParser.DivExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code UintNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterUintNode(SimpleCParser.UintNodeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code UintNode}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitUintNode(SimpleCParser.UintNodeContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code LthExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterLthExpr(SimpleCParser.LthExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code LthExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitLthExpr(SimpleCParser.LthExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code GthExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterGthExpr(SimpleCParser.GthExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code GthExpr}
-	 * labeled alternative in {@link SimpleCParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitGthExpr(SimpleCParser.GthExprContext ctx);
 }

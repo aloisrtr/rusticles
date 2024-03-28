@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Test;
 import compiler.Compiler;
 import compiler.frontend.SimpleCPrinter;
 
+import java.io.File;
+
 class testBackend {
 
-	private void testPattern(String path) {
+	private void testBackend(String path) {
 		String contentInit = Compiler.readFile(path);
 		System.out.println("Initial content is : \n" + contentInit);
 		ParseTree tree = Compiler.parse(contentInit);
@@ -26,44 +28,16 @@ class testBackend {
 
 		assert(genContent.equals(genContent2));
 	}
-	
-	@Test
-	void testParserAdd() {
-		testPattern("src/test/resources/add.sc");
-	}
 
 	@Test
-	void testParserFact() {
-		testPattern("src/test/resources/add.sc");
-	}
-	
-	@Test
-	void testParserHello() {
-		testPattern("src/test/resources/hello.sc");
-	}
-	
-	@Test
-	void testParserMax() {
-		testPattern("src/test/resources/max.sc");
-	}
-	
-	@Test
-	void testParserPower() {
-		testPattern("src/test/resources/power.sc");
-	}
-
-	@Test
-	void testParserSum() {
-		testPattern("src/test/resources/sum.sc");
-	}
-	
-	@Test
-	void testParserFunctions() {
-		testPattern("src/test/resources/functions.sc");
-	}
-	
-	@Test
-	void testParserPrint() {
-		testPattern("src/test/resources/print.sc");
+	void testAllFilesBackend() {
+		String path = "src/test/resources";
+		File folder = new File(path);
+		File[] listOfFiles = folder.listFiles();
+		for (File file : listOfFiles) {
+			if (file.isFile()) {
+				testBackend(file.getPath());
+			}
+		}
 	}
 }

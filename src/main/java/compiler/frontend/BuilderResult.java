@@ -9,7 +9,7 @@ public class BuilderResult {
 	IRBlock exit;
 	IRValue value;
 
-	public BuilderResult(boolean hasBlock, IRBlock entry, IRBlock exit, IRValue value){
+	public BuilderResult(boolean hasBlock, IRBlock entry, IRBlock exit, IRValue value) {
 		this.hasBlock = hasBlock;
 		this.entry = entry;
 		this.exit = exit;

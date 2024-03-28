@@ -15,7 +15,7 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	}
 
 	public String visitFunDef(SimpleCParser.FunDefContext ctx) {
-		StringBuilder result = new StringBuilder("fn " + ctx.name.getText() + "(");
+		StringBuilder result = new StringBuilder("fn " + ctx.name.getText() + " (");
 
 		if (!ctx.args.isEmpty()) {
 			int num_args = ctx.args.size();
@@ -79,13 +79,12 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitForExpr(SimpleCParser.ForExprContext ctx) {
-        return "for (" +
+        return "for " +
 				ctx.name.getText() +
                 " in " +
 				visit(ctx.begin) +
                 ".." +
                 visit(ctx.end) +
-                ")" +
                 visit(ctx.body);
 	}
 
@@ -95,7 +94,7 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	}
 	@Override
 	public String visitFunCallExpr(SimpleCParser.FunCallExprContext ctx) {
-		StringBuilder result = new StringBuilder(ctx.name.getText() + " (");
+		StringBuilder result = new StringBuilder(ctx.name.getText() + "(");
 		int num_args = ctx.args.size();
 		for (ParseTree c : ctx.args.subList(0, num_args - 1))
 			result.append(this.visit(c)).append(", ");

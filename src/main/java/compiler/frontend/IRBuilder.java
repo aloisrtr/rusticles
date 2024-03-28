@@ -92,7 +92,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRBlock current = in;
 		currentBlock = current;
 		
-		//Recursive call for each child
+		// ToDo Recursive call for each child
 
 		for (ParseTree c : ctx.children) {
 			BuilderResult res = this.visit(c);
@@ -157,7 +157,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	 * 
 	 ****************************************************************************/ 
 
-	//TODO: varDecl / varDef / varAssign
+	// TODO: varDecl / varDef / varAssign
 
 	@Override
 	public BuilderResult visitVarAssignExpr(VarAssignExprContext ctx) {
@@ -285,8 +285,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	@Override
 	public BuilderResult visitIdExpr(IdExprContext ctx) {
-		//Key function for having SSA working properly
-		//SymbolTableEntry entry = symbolTable.lookup(ctx.name.getText());
+		// Key function for having SSA working properly
+		// SymbolTableEntry entry = symbolTable.lookup(ctx.name.getText());
 		IRValue val = null; //TODO: find the correct value in SSA form
 
 		return new BuilderResult(false, null, null, val);

@@ -65,6 +65,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			this.visit(function);
 			this.symbolTable = this.symbolTable.finalizeScope().get();
 		}
+		// Useless -> we return null
 		return null;
 	}
 	
@@ -82,7 +83,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		
 		//We mark the newly created function as currentFunction : blocks will be added inside
 		currentFunction = func;
-		IRBlock entryBlock = createBlock(func);
+		IRBlock entryBlock = func.addBlock();
 		
 		// Recursive call to the body to get its IR
 		BuilderResult body = visitBlock(ctx.body);
@@ -97,7 +98,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitBlock(BlockContext ctx) {
 		// We create a new block, save it as in point and current point
-		IRBlock in =  createBlock(currentFunction);
+		IRBlock in =  currentFunction.addBlock();
 		IRBlock current = in;
 		currentBlock = current;
 
@@ -175,34 +176,36 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitVarDefExpr(VarDefExprContext ctx) {
 		IRType type = translateType(ctx.t);
-		IRValue val = null;
-		if (ctx.body != null) {
-			BuilderResult res = this.visit(ctx.body);
-			val = res.value;
-		}
-		// Add to the current symbol table
-		this.symbolTable.insert(ctx.name.getText());
-		return new BuilderResult(false, null, null, val);
+
+		BuilderResult res = this.visit(ctx.body);
+		IRValue value = res.value;
+
+		// Add to the current symbol table the new variable
+		// Add of the IRValue in the current block
+
+		this.symbolTable.insert(ctx.name.getText(), value);
+
+		return new BuilderResult(false, null, null, value);
 	}
 
 	@Override
 	public BuilderResult visitVarAssignExpr(VarAssignExprContext ctx) {
-		//We get the value of the expression
+		// We get the value of the body
 		BuilderResult res = this.visit(ctx.body);
-		//We get the symbol table entry
-		symbolTable.insert(ctx.name.getText());
-		//We create a new assign instruction
-		//IRAssignInstruction instr = new IRAssignInstruction(entry, res.value);
-		//We add the instruction to the current block
-		//currentBlock.addOperation(instr);
-		//We return the result
+		// We change the symbol table such as the variable is updated
+		// the value is res.value
+		// we have to create a new variable to have the SSA form
+		// symbolTable.insert(ctx.name.getText(), res.value);
+
 		return new BuilderResult(false, null, null, null);
 	}
 
 	@Override
 	public BuilderResult visitIntExpr(IntExprContext ctx) {
-		Integer val = Integer.parseInt(ctx.children.get(0).getText());
+		Integer val = Integer.parseInt(ctx.children.getFirst().getText());
+
 		IRConstantInstruction<Integer> instr = new IRConstantInstruction<Integer>(IRType.INT, val);
+
 		currentBlock.addOperation(instr);
 
 		return new BuilderResult(false, null, null, instr.getResult());
@@ -210,14 +213,14 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	@Override
 	public BuilderResult visitUintExpr(UintExprContext ctx) {
-		Integer val = Integer.parseUnsignedInt(ctx.children.get(0).getText());
+		Integer val = Integer.parseUnsignedInt(ctx.children.getFirst().getText());
 		IRConstantInstruction<Integer> instr = new IRConstantInstruction<>(IRType.UINT, val);
 		currentBlock.addOperation(instr);
 		return new BuilderResult(false, null, null, instr.getResult());
 	}
 
 	public BuilderResult visitBoolExpr(BoolExprContext ctx) {
-		Integer val = Objects.equals(ctx.children.get(0).getText(), "true") ? 1 : 0;
+		Integer val = Objects.equals(ctx.children.getFirst().getText(), "true") ? 1 : 0;
 		IRConstantInstruction<Integer> instr = new IRConstantInstruction<>(IRType.BOOL, val);
 		currentBlock.addOperation(instr);
 		return new BuilderResult(false, null, null, instr.getResult());
@@ -284,10 +287,10 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		IRDivInstruction instr = new IRDivInstruction(res1.value, res2.value);
 		currentBlock.addOperation(instr);
-		
+
 		return new BuilderResult(false, null, null, instr.getResult());
 	}
-	
+
 	@Override
 	public BuilderResult visitLthExpr(LthExprContext ctx) {
 		BuilderResult res1 = this.visit(ctx.lhs);

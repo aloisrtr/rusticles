@@ -15,7 +15,7 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	}
 
 	public String visitFunDef(SimpleCParser.FunDefContext ctx) {
-		StringBuilder result = new StringBuilder("fn " + ctx.name.getText() + " (");
+		StringBuilder result = new StringBuilder("fn " + ctx.name.getText() + "(");
 
 		if (!ctx.args.isEmpty()) {
 			int num_args = ctx.args.size();
@@ -23,8 +23,9 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 				result.append(this.visit(c)).append(", ");
 			result.append(this.visit(ctx.args.get(num_args - 1)));
 		}
-		result.append("): ");
+		result.append(") : ");
 		result.append(this.visit(ctx.returnType));
+		result.append(" ");
 		return result + this.visit(ctx.body);
 	}
 
@@ -57,7 +58,7 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 		StringBuilder body = new StringBuilder();
 		for (ParseTree child : ctx.statements) {
 			body.append(visit(child));
-			body.append(";");
+			body.append(";\n");
 		}
 		if (ctx.lastexpr != null) {
 			if (!ctx.statements.isEmpty()) {
@@ -105,13 +106,9 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitVarDefExpr(SimpleCParser.VarDefExprContext ctx) {
-		StringBuilder result = new StringBuilder("let " + ctx.name.getText());
-		if (ctx.t != null) {
-			result.append(": ");
-			result.append(visit(ctx.t));
-		}
-		result.append(" = ");
-		return result + visit(ctx.body);
+        return "let " + ctx.name.getText() + " : " +
+                visit(ctx.t) +
+                " = " + visit(ctx.body);
 	}
 
 	@Override

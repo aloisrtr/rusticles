@@ -1,7 +1,7 @@
 fn testwhile() : void {
-    let x = 5;
+    let x : int = 5;
     while (x > 0) {
-        let y = true;
+        let y : bool = true;
         x = x - 1;
     }
 }

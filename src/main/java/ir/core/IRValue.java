@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IRValue implements IRObject{
-
     private static int number = 0;
     private final List<IROperation> uses; /* !< List of operations that use the value as operand */
     public  IRType type; 

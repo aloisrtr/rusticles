@@ -83,12 +83,11 @@ public class IRImport extends IRTXTBaseVisitor<IRObject> {
 	
 	public IRType visitIrType(IrTypeContext ctx) {
 		return switch(ctx) {
-			case IRTXTParser.VoidTypeContext st -> null;
+			case IRTXTParser.IRVOIDContext st -> IRType.VOID;
 			case IRTXTParser.IRINTContext st -> IRType.INT;
 			case IRTXTParser.IRUINTContext st -> IRType.UINT;
-			case IRTXTParser.IRCHARContext st -> IRType.CHAR;
-			case IRTXTParser.IRFLOATContext st -> IRType.FLOAT;
 			case IRTXTParser.IRADDRContext st -> IRType.ADDR;
+			case IRTXTParser.IRBOOLContext st -> IRType.BOOL;
 			default -> throw new IllegalArgumentException("Unexpected value: " + ctx);
 		};
 	}
@@ -128,7 +127,7 @@ public class IRImport extends IRTXTBaseVisitor<IRObject> {
 			argTypes.add(visitIrType(oneArg.type));
 		}
 		
-		IRFunction result = new IRFunction(ctx.name.getText(), IRType.CHAR, argTypes);
+		IRFunction result = new IRFunction(ctx.name.getText(), IRType.UINT, argTypes);
 		
 		//We register the function
 		this.idToFuncMap.put(ctx.name.getText(), result);

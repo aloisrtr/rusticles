@@ -144,17 +144,17 @@ public interface SimpleCListener extends ParseTreeListener {
 	 */
 	void exitMulExpr(SimpleCParser.MulExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code IdExpr}
+	 * Enter a parse tree produced by the {@code BoolExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterIdExpr(SimpleCParser.IdExprContext ctx);
+	void enterBoolExpr(SimpleCParser.BoolExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code IdExpr}
+	 * Exit a parse tree produced by the {@code BoolExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitIdExpr(SimpleCParser.IdExprContext ctx);
+	void exitBoolExpr(SimpleCParser.BoolExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code UintExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
@@ -167,6 +167,18 @@ public interface SimpleCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitUintExpr(SimpleCParser.UintExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IdExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdExpr(SimpleCParser.IdExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IdExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdExpr(SimpleCParser.IdExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code SubExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.

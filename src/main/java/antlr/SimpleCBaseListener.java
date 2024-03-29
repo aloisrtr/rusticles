@@ -161,13 +161,13 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIdExpr(SimpleCParser.IdExprContext ctx) { }
+	@Override public void enterBoolExpr(SimpleCParser.BoolExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIdExpr(SimpleCParser.IdExprContext ctx) { }
+	@Override public void exitBoolExpr(SimpleCParser.BoolExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -180,6 +180,18 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitUintExpr(SimpleCParser.UintExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIdExpr(SimpleCParser.IdExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIdExpr(SimpleCParser.IdExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

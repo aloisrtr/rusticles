@@ -13,12 +13,12 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface IRTXTVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by the {@code VoidType}
+	 * Visit a parse tree produced by the {@code IRVOID}
 	 * labeled alternative in {@link IRTXTParser#irType}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVoidType(IRTXTParser.VoidTypeContext ctx);
+	T visitIRVOID(IRTXTParser.IRVOIDContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code IRINT}
 	 * labeled alternative in {@link IRTXTParser#irType}.
@@ -34,19 +34,12 @@ public interface IRTXTVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIRUINT(IRTXTParser.IRUINTContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code IRCHAR}
+	 * Visit a parse tree produced by the {@code IRBOOL}
 	 * labeled alternative in {@link IRTXTParser#irType}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIRCHAR(IRTXTParser.IRCHARContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code IRFLOAT}
-	 * labeled alternative in {@link IRTXTParser#irType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIRFLOAT(IRTXTParser.IRFLOATContext ctx);
+	T visitIRBOOL(IRTXTParser.IRBOOLContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code IRADDR}
 	 * labeled alternative in {@link IRTXTParser#irType}.

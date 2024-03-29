@@ -91,12 +91,12 @@ public interface SimpleCVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMulExpr(SimpleCParser.MulExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code IdExpr}
+	 * Visit a parse tree produced by the {@code BoolExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIdExpr(SimpleCParser.IdExprContext ctx);
+	T visitBoolExpr(SimpleCParser.BoolExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code UintExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
@@ -104,6 +104,13 @@ public interface SimpleCVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUintExpr(SimpleCParser.UintExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IdExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdExpr(SimpleCParser.IdExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code SubExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.

@@ -10,11 +10,10 @@ INTEGER : '-'? [0-9]+;
 
 WS  :   ( ' ' | '\t' | '\r' '\n' | '\n' ) -> skip;
 
-irType : 'void'  	#VoidType
+irType : 'VOID'  	#IRVOID
 	| 'INT' 	#IRINT
 	| 'UINT'  	#IRUINT
-	| 'CHAR'    #IRCHAR
-	| 'FLOAT'   #IRFLOAT
+	| 'BOOL'    #IRBOOL
 	| 'ADDR'    #IRADDR;
 	
 irTop : 

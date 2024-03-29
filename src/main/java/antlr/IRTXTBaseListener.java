@@ -19,13 +19,13 @@ public class IRTXTBaseListener implements IRTXTListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVoidType(IRTXTParser.VoidTypeContext ctx) { }
+	@Override public void enterIRVOID(IRTXTParser.IRVOIDContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVoidType(IRTXTParser.VoidTypeContext ctx) { }
+	@Override public void exitIRVOID(IRTXTParser.IRVOIDContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -55,25 +55,13 @@ public class IRTXTBaseListener implements IRTXTListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIRCHAR(IRTXTParser.IRCHARContext ctx) { }
+	@Override public void enterIRBOOL(IRTXTParser.IRBOOLContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIRCHAR(IRTXTParser.IRCHARContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIRFLOAT(IRTXTParser.IRFLOATContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIRFLOAT(IRTXTParser.IRFLOATContext ctx) { }
+	@Override public void exitIRBOOL(IRTXTParser.IRBOOLContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -10,17 +10,17 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface IRTXTListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by the {@code VoidType}
+	 * Enter a parse tree produced by the {@code IRVOID}
 	 * labeled alternative in {@link IRTXTParser#irType}.
 	 * @param ctx the parse tree
 	 */
-	void enterVoidType(IRTXTParser.VoidTypeContext ctx);
+	void enterIRVOID(IRTXTParser.IRVOIDContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code VoidType}
+	 * Exit a parse tree produced by the {@code IRVOID}
 	 * labeled alternative in {@link IRTXTParser#irType}.
 	 * @param ctx the parse tree
 	 */
-	void exitVoidType(IRTXTParser.VoidTypeContext ctx);
+	void exitIRVOID(IRTXTParser.IRVOIDContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code IRINT}
 	 * labeled alternative in {@link IRTXTParser#irType}.
@@ -46,29 +46,17 @@ public interface IRTXTListener extends ParseTreeListener {
 	 */
 	void exitIRUINT(IRTXTParser.IRUINTContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code IRCHAR}
+	 * Enter a parse tree produced by the {@code IRBOOL}
 	 * labeled alternative in {@link IRTXTParser#irType}.
 	 * @param ctx the parse tree
 	 */
-	void enterIRCHAR(IRTXTParser.IRCHARContext ctx);
+	void enterIRBOOL(IRTXTParser.IRBOOLContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code IRCHAR}
+	 * Exit a parse tree produced by the {@code IRBOOL}
 	 * labeled alternative in {@link IRTXTParser#irType}.
 	 * @param ctx the parse tree
 	 */
-	void exitIRCHAR(IRTXTParser.IRCHARContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code IRFLOAT}
-	 * labeled alternative in {@link IRTXTParser#irType}.
-	 * @param ctx the parse tree
-	 */
-	void enterIRFLOAT(IRTXTParser.IRFLOATContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code IRFLOAT}
-	 * labeled alternative in {@link IRTXTParser#irType}.
-	 * @param ctx the parse tree
-	 */
-	void exitIRFLOAT(IRTXTParser.IRFLOATContext ctx);
+	void exitIRBOOL(IRTXTParser.IRBOOLContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code IRADDR}
 	 * labeled alternative in {@link IRTXTParser#irType}.

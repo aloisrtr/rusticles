@@ -1,43 +1,46 @@
 package compiler.frontend;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Vector;
 
 public class SymbolTable {
-	Optional<SymbolTable> mother;
-	HashMap<VariableId, VariableInfo> symbols;
+	SymbolTable parent = null;
+	HashMap<String, VariableInfo> symbols;
 	Vector<SymbolTable> children;
-	public SymbolTable(Optional<SymbolTable> mother) {
-		this.mother = mother;
-		children = new Vector<SymbolTable>();
-		symbols = new HashMap<VariableId, VariableInfo>();
+
+	/// Creates a new symbol table with no children.
+	public SymbolTable() {}
+
+	/// Initializes a new symbol table, with this one as parent.
+	public SymbolTable initializeScope() {
+		SymbolTable child = new SymbolTable();
+		child.parent = this;
+		return child;
 	}
 
-	public SymbolTable initializeScope(ParserRuleContext ctx) {
-		return new SymbolTable(Optional.empty());
-	}
-
-	/// Visit BLOCK
-	/// symbol_table = initialize(ctx);
-	/// Remplit en parcourant les fils du block... (args : mut symbol_table)
-	/// finalize(symbol_table);
-	public void finalizeScope(SymbolTable children) {
-		this.children.add(children);
-	}
-
-	public void insert(String name) {
-		symbols.put(new VariableId(name), new VariableInfo());
-	}
-
-	public Optional<VariableInfo> lookup(VariableId name) {
-		if (symbols.containsKey(name)) {
-			return Optional.of(symbols.get(name));
+	/// Adds this symbol table to its parent's children list, then returns a reference to said parent.
+	///
+	/// If this symbol table is the root, it returns null.
+	public Optional<SymbolTable> finalizeScope() {
+		if (this.parent != null) {
+			this.parent.children.add(this);
 		}
-		if (mother.isPresent()) {
-			return mother.get().lookup(name);
+		return Optional.ofNullable(this.parent);
+	}
+
+	/// Inserts a new symbol in the table.
+	public void insert(String name) {
+		this.symbols.put(name, new VariableInfo());
+	}
+
+	/// Looks up the information of a symbol in the table.
+	public Optional<VariableInfo> lookup(String name) {
+		if (this.symbols.containsKey(name)) {
+			return Optional.ofNullable(this.symbols.get(name));
+		}
+		if (this.parent != null) {
+			return parent.lookup(name);
 		}
 		return Optional.empty();
 	}

@@ -1,5 +1,7 @@
 package compiler.frontend;
 
+import ir.core.IRValue;
+
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Vector;
@@ -30,8 +32,8 @@ public class SymbolTable {
 	}
 
 	/// Inserts a new symbol in the table.
-	public void insert(String name) {
-		this.symbols.put(name, new VariableInfo());
+	public void insert(String name, IRValue value) {
+		this.symbols.put(name, new VariableInfo(value));
 	}
 
 	/// Looks up the information of a symbol in the table.

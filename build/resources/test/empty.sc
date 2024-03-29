@@ -1,2 +1,2 @@
-fn empty () : void
+fn empty () : void {
 }

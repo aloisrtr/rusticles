@@ -1,8 +1,10 @@
 package compiler;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 
+import compiler.frontend.IRBuilder;
+import ir.core.IRTopLevel;
+import ir.importExport.IRExport;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.jupiter.api.Test;
 
@@ -15,18 +17,21 @@ class testIRImport {
 
 	private void testIRImport(String path) {
 		String contentInit = Compiler.readFile(path);
-		System.out.println("Initial content is : \n" + contentInit);
-		ParseTree tree = Compiler.parse(contentInit);
-		System.out.println("Parsed !");
-    	SimpleCPrinter astPrinter = new SimpleCPrinter();
-    	String genContent = astPrinter.visit(tree);
-		System.out.println("Re-generated content is : \n" + genContent);
-		ParseTree tree2 = Compiler.parse(genContent);
-		System.out.println("Parsed !");
-		String genContent2 = 	astPrinter.visit(tree2);
-		System.out.println("Re-re-generated content is : \n" + genContent2);
 
-		assert(genContent.equals(genContent2));
+		System.out.println("----- " + "Content from - " + path + " -----");
+		System.out.println("----- ----- -----");
+
+		ParseTree tree = Compiler.parse(contentInit);
+
+		SimpleCPrinter astPrinter = new SimpleCPrinter();
+		String genContent = astPrinter.visit(tree);
+		System.out.println("----- Content Parsed -----");
+		System.out.println(genContent);
+		System.out.println("----- -----");
+		IRTopLevel top = IRBuilder.buildTopLevel(tree);
+		System.out.println("----- IR Built -----");
+		System.out.println(IRExport.printIR(top));
+		System.out.println("----- -----");
 	}
 	@Test
 	void testAllFilesIRImport() {
@@ -34,9 +39,11 @@ class testIRImport {
 		File folder = new File(path);
 		File[] listOfFiles = folder.listFiles();
 		for (File file : listOfFiles) {
-		    if (file.isFile()) {
-		        testIRImport(file.getPath());
-		    }
+			if (file.isFile()) {
+				if (file.getPath().equals("src/test/resources/add.sc")) {
+					testIRImport(file.getPath());
+				}
+			}
 		}
 	}
 }

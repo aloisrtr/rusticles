@@ -37,7 +37,6 @@ import ir.terminator.IRReturn;
 import ir.terminator.IRTerminator;
 
 public class IRImport extends IRTXTBaseVisitor<IRObject> {
-
 	
 	public IRImport() {
 		this.idToBlockMap = new HashMap<String, IRBlock>();

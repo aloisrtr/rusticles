@@ -22,9 +22,9 @@ class testParser {
 		System.out.println("Re-generated content is : \n" + genContent);
 		ParseTree tree2 = Compiler.parse(genContent);
 		System.out.println("Parsed !");
-		String genContent2 = 	astPrinter.visit(tree2);
+		String genContent2 = astPrinter.visit(tree2);
 		System.out.println("Re-re-generated content is : \n" + genContent2);
-		assert genContent.equals(genContent2) ;
+		assert genContent.equals(genContent2);
 	}
 	@Test
 	void testAllFilesParser() {

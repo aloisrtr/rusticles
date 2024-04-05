@@ -26,6 +26,11 @@ public class IRFunction implements IRVisitableObject {
     	return newBlock;
     }
 
+    public IRBlock addBlock(IRBlock block) {
+    	blocks.add(block);
+    	return block;
+    }
+
     public String getName() {
         return name;
     }

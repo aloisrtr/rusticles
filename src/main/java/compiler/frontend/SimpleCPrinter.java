@@ -61,12 +61,12 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 			body.append(";\n");
 		}
 		if (ctx.lastexpr != null) {
-			if (!ctx.statements.isEmpty()) {
+			body.append(visit(ctx.lastexpr));
+			if (!ctx.lastexpr.isEmpty()) {
 				body.append("\n");
 			}
-			body.append(visit(ctx.lastexpr));
 		}
-		return "{\n" + body.toString().replaceAll("(?m)^", "\t") + "\n}";
+		return "{\n" + body.toString().replaceAll("(?m)^", "\t") + "}";
 	}
 	@Override
 	public String visitIfExpr(SimpleCParser.IfExprContext ctx) {
@@ -100,7 +100,6 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 		for (ParseTree c : ctx.args.subList(0, num_args - 1))
 			result.append(this.visit(c)).append(", ");
 		result.append(this.visit(ctx.args.get(num_args - 1)));
-
 		return result + ")";
 	}
 

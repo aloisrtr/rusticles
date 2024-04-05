@@ -63,9 +63,20 @@ public class IRExport extends IRVisitor<String> {
 		result += f.getReturnType();
 		result += " {\n";
 		
-		for (IRBlock oneBlock : f.getBlocks()) 
-			result += "  block_" + f.getBlocks().indexOf(oneBlock) + " {\n" + this.visitBlock(oneBlock) + "  }\n";
-		
+		// for (IRBlock oneBlock : f.getBlocks())
+		// 	result += "  block_" + f.getBlocks().indexOf(oneBlock) + " {\n" + this.visitBlock(oneBlock) + "  }\n";
+
+		// no \n for the last block
+		Iterator<IRBlock> it = f.getBlocks().iterator();
+		while (it.hasNext()) {
+			IRBlock oneBlock = it.next();
+			result += "  block_" + f.getBlocks().indexOf(oneBlock) + " {\n" + this.visitBlock(oneBlock) + "  }";
+			if (it.hasNext()) {
+				result += "\n";
+			}
+		}
+
+
 		result += "\n}";
 		return result;
 	}
@@ -159,8 +170,11 @@ public class IRExport extends IRVisitor<String> {
 
 	@Override
 	public String visitReturnTerminator(IRReturn r) {
-		// TODO Auto-generated method stub
-		return "return " + r.getOperands().get(0);
+		if (r.getOperands().isEmpty()) {
+			return "return";
+		} else {
+			return "return " + r.getOperands().get(0);
+		}
 	}
 
 	@Override

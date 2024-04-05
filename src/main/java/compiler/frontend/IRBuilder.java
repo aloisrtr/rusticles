@@ -1,6 +1,7 @@
 package compiler.frontend;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ import ir.terminator.IRGoto;
 import ir.terminator.IRReturn;
 
 public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
-	IRTopLevel top;
+	IRTopLevel top = null;
 	IRFunction currentFunction = null;
 	IRBlock currentBlock = null;
 	SymbolTable symbolTable;
@@ -39,7 +40,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 
 	public IRBuilder() {
-		top = new IRTopLevel();
 		symbolTable = new SymbolTable();
 	}
 
@@ -60,6 +60,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	/// Visits all functions in the translation unit.
 	@Override
 	public BuilderResult visitTranslationUnit(TranslationUnitContext ctx) {
+		top = new IRTopLevel();
 		for (ParseTree function : ctx.children) {
 			this.symbolTable = this.symbolTable.initializeScope();
 			this.visit(function);
@@ -72,29 +73,31 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitFunDef(FunDefContext ctx) {
 		// We build the list of arg types
-		ArrayList<IRType> argTypes = new ArrayList<>();
+		List<IRType> argTypes = new ArrayList<>();
+		List<String> argNames = new ArrayList<>();
 		for (FunArgContext a : ctx.args) {
 			argTypes.add(translateType(a.argType));
+			argNames.add(a.name.getText());
 		}
 
 		// We instantiate a new function and add it in the toplevel
 		IRFunction func = new IRFunction(ctx.name.getText(), translateType(ctx.returnType), argTypes);
+
+		List<IRValue> args_value = func.getArgs();
+		for (int i = 0; i < args_value.size(); i++) {
+			symbolTable.insert(argNames.get(i), args_value.get(i));
+		}
+
 		top.addFunction(func);
 
 		// We mark the newly created function as currentFunction : blocks will be added inside
 		currentFunction = func;
-		IRBlock entryBlock = func.addBlock();
 
-		// Recursive call to the body to get its IR
-		BuilderResult body = visitBlock(ctx.body);
-
-		// We connect the result with the entry block and seal the body
-		entryBlock.addTerminator(new IRGoto(body.entry));
-
+		// We just visit the body
+		visitBlock(ctx.body);
 		// Don't care about the value returned
 		return null;
 	}
-
 	@Override
 	public BuilderResult visitBlock(BlockContext ctx) {
 		// We create a new block, save it as in point and current point
@@ -106,11 +109,17 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		this.symbolTable = this.symbolTable.initializeScope();
 
 		// Visit all children
-		for (ParseTree c : ctx.children) {
+		for (ParseTree c : ctx.statements) {
 			BuilderResult res = this.visit(c);
 			if (res != null) {
 				current = res.entry;
 			}
+		}
+		if (ctx.lastexpr != null) {
+			BuilderResult res = this.visit(ctx.lastexpr);
+			currentBlock.addTerminator(new IRReturn(res.value));
+		} else {
+			currentBlock.addTerminator(new IRReturn(null));
 		}
 
 		// Finalize the current symbol table level
@@ -137,7 +146,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	public BuilderResult visitFunCallExpr(FunCallExprContext ctx) {
 		// We gather arg values
 		ArrayList<IRValue> args = new ArrayList<>();
-
 		for (ParseTree c : ctx.args) {
 			BuilderResult res = this.visit(c);
 			args.add(res.value);
@@ -245,10 +253,13 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitIdExpr(IdExprContext ctx) {
 		// Key function for having SSA working properly
-		VariableInfo entry = symbolTable.lookup(ctx.name.getText()).orElseThrow();
-		IRValue val = entry.value; // TODO: correct SSA form
-
-		return new BuilderResult(false, null, null, val);
+		Optional<VariableInfo> entry = symbolTable.lookup(ctx.name.getText());
+		if (entry.isPresent()) {
+			IRValue val = entry.get().value; // TODO: correct SSA form
+			return new BuilderResult(false, null, null, val);
+		} else {
+			throw new RuntimeException("Variable " + ctx.name.getText() + " not found in symbol table");
+		}
 	}
 
 	@Override
@@ -333,9 +344,4 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	public BuilderResult visitParenExpr(ParenExprContext ctx) {
 		return this.visit(ctx.body);
 	}
-
-	private IRBlock createBlock(IRFunction f) {
-		return f.addBlock();
-	}
 }
-

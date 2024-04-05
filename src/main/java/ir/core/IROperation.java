@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class IROperation implements IRVisitableObject {
-
     private IRValue result; /* !< Value representing the result of the operation */
     private final List<IRValue> operands; /* !< List of values representing the operands of the operation */
     private IRBlock containingBlock;

@@ -1,5 +1,3 @@
-
-
 fn testif(a: int) : void {
     if (a < 2) {
     a = a + 1

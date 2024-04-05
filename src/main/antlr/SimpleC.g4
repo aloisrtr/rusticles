@@ -30,7 +30,7 @@ expr :
 | 'for' name=IDENTIFIER 'in' begin=expr '..' end=expr body=block  #ForExpr
 | 'while' '(' condition=expr ')' body=block                       #WhileExpr
 // Non-control flow expressions
-| 'let ' name=IDENTIFIER ':' t=type '=' body=expr              #VarDefExpr
+| 'let ' name=IDENTIFIER ':' t=type '=' body=expr                 #VarDefExpr
 | name=IDENTIFIER '=' body=expr                                   #VarAssignExpr
 | INTEGER 					                                      #IntExpr
 | UNSIGNED_INTEGER                                                #UintExpr

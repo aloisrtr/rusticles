@@ -1,3 +1,3 @@
-fn main(): void{
+fn main(): void {
     let a : int = 4;
 }

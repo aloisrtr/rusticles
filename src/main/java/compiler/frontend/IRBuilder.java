@@ -5,17 +5,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import ir.core.*;
 import jdk.jfr.Unsigned;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import antlr.SimpleCBaseVisitor;
 import antlr.SimpleCParser.*;
 
-import ir.core.IRBlock;
-import ir.core.IRFunction;
-import ir.core.IRTopLevel;
-import ir.core.IRType;
-import ir.core.IRValue;
 import ir.instruction.IRAddInstruction;
 import ir.instruction.IRCompareGtInstruction;
 import ir.instruction.IRCompareLtInstruction;
@@ -173,6 +169,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	public BuilderResult visitIfExpr(IfExprContext ctx) {
 		BuilderResult cond = this.visit(ctx.cond);
 		cond.hasBlock = true;
+		cond.entry = this.currentBlock;
 		BuilderResult if_block = this.visit(ctx.ifBody);
 		BuilderResult continuation_block = this.visit(ctx.elseBody);
 		return new BuilderResult(true, cond.entry, null, null); // TODO: phi value
@@ -189,9 +186,12 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	@Override
 	public BuilderResult visitWhileExpr(WhileExprContext ctx) {
+		IRBlock in = this.currentBlock;
+		IRBlock condBlock = currentFunction.addBlock();
+		this.currentBlock = condBlock;
 		BuilderResult cond = this.visit(ctx.condition);
 		BuilderResult body = this.visit(ctx.body);
-		return new BuilderResult(true, null, null, null);
+		return new BuilderResult(true, in, condBlock, null);
 	}
 
 	/****************************************************************************
@@ -209,7 +209,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		// Add of the IRValue in the current block
 		this.symbolTable.insert(ctx.name.getText(), value);
 
-		return new BuilderResult(false, null, null, value);
+		return new BuilderResult(false, null, null, null);
 	}
 
 	@Override
@@ -255,8 +255,16 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		// Key function for having SSA working properly
 		Optional<VariableInfo> entry = symbolTable.lookup(ctx.name.getText());
 		if (entry.isPresent()) {
-			IRValue val = entry.get().value; // TODO: correct SSA form
+			IRValue val = entry.get().value;
+			if (currentBlock.getPredecessors().size() > 1) {
+				IRPhiOperation phi = new IRPhiOperation(val.getType());
+				for (IRBlock pred : phi.getContainingBlock().getPredecessors()) {
+					phi.addOperand(symbolTable.parent.lookup(ctx.name.getText()).get().value);
+				}
+				val = phi.getResult();
+			}
 			return new BuilderResult(false, null, null, val);
+
 		} else {
 			throw new RuntimeException("Variable " + ctx.name.getText() + " not found in symbol table");
 		}

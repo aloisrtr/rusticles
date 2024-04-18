@@ -125,6 +125,18 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAssign(SimpleCParser.AssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAssign(SimpleCParser.AssignContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIfstatementExpr(SimpleCParser.IfstatementExprContext ctx) { }
 	/**
 	 * {@inheritDoc}

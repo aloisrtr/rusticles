@@ -81,6 +81,13 @@ public class SimpleCBaseVisitor<T> extends AbstractParseTreeVisitor<T> implement
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitAssign(SimpleCParser.AssignContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitIfstatementExpr(SimpleCParser.IfstatementExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

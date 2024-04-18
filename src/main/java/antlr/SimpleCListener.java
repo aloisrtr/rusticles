@@ -108,6 +108,16 @@ public interface SimpleCListener extends ParseTreeListener {
 	 */
 	void exitBlock(SimpleCParser.BlockContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link SimpleCParser#assign}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssign(SimpleCParser.AssignContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link SimpleCParser#assign}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssign(SimpleCParser.AssignContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code IfstatementExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree

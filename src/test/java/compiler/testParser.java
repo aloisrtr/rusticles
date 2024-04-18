@@ -10,6 +10,8 @@ import compiler.Compiler;
 import compiler.frontend.SimpleCPrinter;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 class testParser {
 	private void testParser(String path) {
@@ -30,8 +32,9 @@ class testParser {
 	void testAllFilesParser() {
 		String path = "src/test/resources";
 		File folder = new File(path);
-		File[] listOfFiles = folder.listFiles();
-        assert listOfFiles != null;
+		File[] files = folder.listFiles();
+		assert files != null;
+		List<File> listOfFiles = Arrays.stream(files).sorted().toList();
 		for (File file : listOfFiles) {
 			if (file.isFile()) {
 				testParser(file.getPath());

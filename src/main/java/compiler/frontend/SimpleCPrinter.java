@@ -111,7 +111,7 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	}
 
 	@Override
-	public String visitVarAssignExpr(SimpleCParser.VarAssignExprContext ctx) {
+	public String visitAssign(SimpleCParser.AssignContext ctx) {
 		return ctx.name.getText() + " = " + visit(ctx.body);
 	}
 

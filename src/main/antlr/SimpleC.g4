@@ -21,9 +21,12 @@ type : 'void'  	#VoidType
 
 block : '{' (statements+=expr ';')* lastexpr = expr? '}' ;
 
+assign : name=IDENTIFIER '=' body=expr;
+
 expr :
 // Return/call
 'return' body=expr                                                #ReturnExpr
+| assign                                                      #VarAssignExpr
 | name=IDENTIFIER '(' (args += expr ',')* args += expr? ')'       #FunCallExpr
 // Control flow
 | ifExpr                                                          #IfstatementExpr
@@ -31,7 +34,6 @@ expr :
 | 'while' '(' condition=expr ')' body=block                       #WhileExpr
 // Non-control flow expressions
 | 'let ' name=IDENTIFIER ':' t=type '=' body=expr                 #VarDefExpr
-| name=IDENTIFIER '=' body=expr                                   #VarAssignExpr
 | INTEGER 					                                      #IntExpr
 | UNSIGNED_INTEGER                                                #UintExpr
 | BOOL                                                            #BoolExpr

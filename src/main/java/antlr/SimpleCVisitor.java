@@ -70,6 +70,12 @@ public interface SimpleCVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlock(SimpleCParser.BlockContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SimpleCParser#assign}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssign(SimpleCParser.AssignContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code IfstatementExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree

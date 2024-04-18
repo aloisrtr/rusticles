@@ -213,12 +213,16 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 
 	@Override
-	public BuilderResult visitVarAssignExpr(VarAssignExprContext ctx) {
+	public BuilderResult visitAssign(AssignContext ctx) {
 		// We get the value of the body
 		BuilderResult res = this.visit(ctx.body);
 		// We change the symbol table such as the variable is updated
 		// the value is res.value
 		// we have to create a new variable to have the SSA form
+		if (symbolTable.lookup(ctx.name.getText()).isEmpty()) {
+			throw new RuntimeException("Variable " + ctx.name.getText() + " not found in symbol table");
+		}
+
 		symbolTable.insert(ctx.name.getText(), res.value);
 
 		return new BuilderResult(false, null, null, null);
@@ -255,6 +259,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		// Key function for having SSA working properly
 		Optional<VariableInfo> entry = symbolTable.lookup(ctx.name.getText());
 		if (entry.isPresent()) {
+
 			IRValue val = entry.get().value;
 			if (currentBlock.getPredecessors().size() > 1) {
 				IRPhiOperation phi = new IRPhiOperation(val.getType());
@@ -264,6 +269,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 				val = phi.getResult();
 			}
 			return new BuilderResult(false, null, null, val);
+
 
 		} else {
 			throw new RuntimeException("Variable " + ctx.name.getText() + " not found in symbol table");

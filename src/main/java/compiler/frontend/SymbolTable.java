@@ -1,7 +1,6 @@
 package compiler.frontend;
 
 import ir.core.IRValue;
-
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Vector;
@@ -24,7 +23,6 @@ public class SymbolTable {
 	}
 
 	/// Adds this symbol table to its parent's children list, then returns a reference to said parent.
-	///
 	/// If this symbol table is the root, it returns null.
 	public Optional<SymbolTable> finalizeScope() {
 		if (this.parent != null) {

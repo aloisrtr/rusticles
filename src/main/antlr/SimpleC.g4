@@ -26,7 +26,8 @@ assign : name=IDENTIFIER '=' body=expr;
 expr :
 // Return/call
 'return' body=expr                                                #ReturnExpr
-| assign                                                      #VarAssignExpr
+| BOOL                                                            #BoolExpr
+| assign                                                          #VarAssignExpr
 | name=IDENTIFIER '(' (args += expr ',')* args += expr? ')'       #FunCallExpr
 // Control flow
 | ifExpr                                                          #IfstatementExpr
@@ -36,7 +37,6 @@ expr :
 | 'let ' name=IDENTIFIER ':' t=type '=' body=expr                 #VarDefExpr
 | INTEGER 					                                      #IntExpr
 | UNSIGNED_INTEGER                                                #UintExpr
-| BOOL                                                            #BoolExpr
 | name=IDENTIFIER 				                                  #IdExpr
 | '-' body=expr					                                  #NegExpr
 | lhs=expr '+' rhs=expr                                           #AddExpr

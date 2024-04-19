@@ -1,5 +1,5 @@
 fn testif(a: int) : void {
-    let a = 3;
+    let a : int = 3;
     if (a > 2) {
     3
     } else {

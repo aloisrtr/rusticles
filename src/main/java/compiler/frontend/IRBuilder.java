@@ -295,8 +295,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 				val = phi.getResult();
 			}
 			return new BuilderResult(false, null, null, val);
-
-
 		} else {
 			throw new RuntimeException("Variable " + ctx.name.getText() + " not found in symbol table");
 		}

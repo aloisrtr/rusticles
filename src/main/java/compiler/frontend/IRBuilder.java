@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import ir.core.*;
+import ir.terminator.IRCondBr;
 import jdk.jfr.Unsigned;
 import org.antlr.v4.runtime.tree.ParseTree;
 
@@ -167,12 +168,37 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	 ****************************************************************************/
 	@Override
 	public BuilderResult visitIfExpr(IfExprContext ctx) {
+		// Creation Begin Block
+		IRBlock begin = currentFunction.addBlock();
+		currentBlock = begin;
+
+		// Visit of the condition, if and else blocks
 		BuilderResult cond = this.visit(ctx.cond);
-		cond.hasBlock = true;
-		cond.entry = this.currentBlock;
 		BuilderResult if_block = this.visit(ctx.ifBody);
-		BuilderResult continuation_block = this.visit(ctx.elseBody);
-		return new BuilderResult(true, cond.entry, null, null); // TODO: phi value
+		BuilderResult else_block = this.visit(ctx.elseBody);
+
+		IRCondBr condBr = new IRCondBr(cond.value, if_block.entry, else_block.entry);
+		currentBlock.addTerminator(condBr);
+
+		// Creation End block
+		IRBlock end = currentFunction.addBlock();
+		IRGoto gotoEnd = new IRGoto(end);
+
+		// Link if and else blocks to the End block
+		if_block.exit.addTerminator(gotoEnd);
+		else_block.exit.addTerminator(gotoEnd);
+
+		// Check that if and else blocks have the same type
+		if (if_block.value.getType() != else_block.value.getType()) {
+			throw new RuntimeException("If and else blocks must have the same type");
+		}
+		// Recuperation of the phi value out of the if and else blocks
+		IRPhiOperation phiIfElse = new IRPhiOperation(if_block.value.getType());
+		phiIfElse.addOperand(if_block.value);
+		phiIfElse.addOperand(else_block.value);
+		IRValue phiIfElseValue = phiIfElse.getResult();
+
+		return new BuilderResult(true, cond.entry, end, phiIfElseValue);
 	}
 
 	@Override

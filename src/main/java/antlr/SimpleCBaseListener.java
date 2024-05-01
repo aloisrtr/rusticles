@@ -77,18 +77,6 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterUintType(SimpleCParser.UintTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitUintType(SimpleCParser.UintTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterBoolType(SimpleCParser.BoolTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -96,18 +84,6 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBoolType(SimpleCParser.BoolTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterArrayType(SimpleCParser.ArrayTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitArrayType(SimpleCParser.ArrayTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -180,18 +156,6 @@ public class SimpleCBaseListener implements SimpleCListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitBoolExpr(SimpleCParser.BoolExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterUintExpr(SimpleCParser.UintExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitUintExpr(SimpleCParser.UintExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

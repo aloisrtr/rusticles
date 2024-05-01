@@ -34,18 +34,6 @@ public interface IRTXTListener extends ParseTreeListener {
 	 */
 	void exitIRINT(IRTXTParser.IRINTContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code IRUINT}
-	 * labeled alternative in {@link IRTXTParser#irType}.
-	 * @param ctx the parse tree
-	 */
-	void enterIRUINT(IRTXTParser.IRUINTContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code IRUINT}
-	 * labeled alternative in {@link IRTXTParser#irType}.
-	 * @param ctx the parse tree
-	 */
-	void exitIRUINT(IRTXTParser.IRUINTContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code IRBOOL}
 	 * labeled alternative in {@link IRTXTParser#irType}.
 	 * @param ctx the parse tree

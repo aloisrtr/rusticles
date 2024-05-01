@@ -43,26 +43,12 @@ public interface SimpleCVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIntType(SimpleCParser.IntTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code UintType}
-	 * labeled alternative in {@link SimpleCParser#type}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUintType(SimpleCParser.UintTypeContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code BoolType}
 	 * labeled alternative in {@link SimpleCParser#type}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitBoolType(SimpleCParser.BoolTypeContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code ArrayType}
-	 * labeled alternative in {@link SimpleCParser#type}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArrayType(SimpleCParser.ArrayTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SimpleCParser#block}.
 	 * @param ctx the parse tree
@@ -103,13 +89,6 @@ public interface SimpleCVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitBoolExpr(SimpleCParser.BoolExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code UintExpr}
-	 * labeled alternative in {@link SimpleCParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitUintExpr(SimpleCParser.UintExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code IdExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.

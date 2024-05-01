@@ -11,9 +11,7 @@ public class SymbolTable {
 	Vector<SymbolTable> children = new Vector<>();
 
 	/// Creates a new symbol table with no children.
-	public SymbolTable() {
-
-	}
+	public SymbolTable() {}
 
 	/// Initializes a new symbol table, with this one as parent.
 	public SymbolTable initializeScope() {

@@ -41,17 +41,13 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 		return "int";
 	}
 
-	public String visitUintType(SimpleCParser.UintTypeContext ctx) {
-		return "uint";
-	}
-
 	public String visitBoolType(SimpleCParser.BoolTypeContext ctx) {
 		return "bool";
 	}
 
-	public String visitArrayType(SimpleCParser.ArrayTypeContext ctx) {
-		return "[" + this.visit(ctx.elemType) + "; " + ctx.size.getText() + "]";
-	}
+	// public String visitArrayType(SimpleCParser.ArrayTypeContext ctx) {
+	// 	return "[" + this.visit(ctx.elemType) + "; " + ctx.size.getText() + "]";
+	// }
 
 	@Override
 	public String visitBlock(SimpleCParser.BlockContext ctx) {
@@ -131,11 +127,6 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	}
 	@Override
 	public String visitIntExpr(SimpleCParser.IntExprContext ctx) {
-		return ctx.getText();
-	}
-
-	@Override
-	public String visitUintExpr(SimpleCParser.UintExprContext ctx) {
 		return ctx.getText();
 	}
 

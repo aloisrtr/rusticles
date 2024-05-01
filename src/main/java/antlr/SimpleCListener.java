@@ -62,18 +62,6 @@ public interface SimpleCListener extends ParseTreeListener {
 	 */
 	void exitIntType(SimpleCParser.IntTypeContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code UintType}
-	 * labeled alternative in {@link SimpleCParser#type}.
-	 * @param ctx the parse tree
-	 */
-	void enterUintType(SimpleCParser.UintTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code UintType}
-	 * labeled alternative in {@link SimpleCParser#type}.
-	 * @param ctx the parse tree
-	 */
-	void exitUintType(SimpleCParser.UintTypeContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code BoolType}
 	 * labeled alternative in {@link SimpleCParser#type}.
 	 * @param ctx the parse tree
@@ -85,18 +73,6 @@ public interface SimpleCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBoolType(SimpleCParser.BoolTypeContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code ArrayType}
-	 * labeled alternative in {@link SimpleCParser#type}.
-	 * @param ctx the parse tree
-	 */
-	void enterArrayType(SimpleCParser.ArrayTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code ArrayType}
-	 * labeled alternative in {@link SimpleCParser#type}.
-	 * @param ctx the parse tree
-	 */
-	void exitArrayType(SimpleCParser.ArrayTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link SimpleCParser#block}.
 	 * @param ctx the parse tree
@@ -165,18 +141,6 @@ public interface SimpleCListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitBoolExpr(SimpleCParser.BoolExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code UintExpr}
-	 * labeled alternative in {@link SimpleCParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterUintExpr(SimpleCParser.UintExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code UintExpr}
-	 * labeled alternative in {@link SimpleCParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitUintExpr(SimpleCParser.UintExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code IdExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.

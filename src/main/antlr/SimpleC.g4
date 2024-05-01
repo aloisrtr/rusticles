@@ -1,11 +1,10 @@
 grammar SimpleC;
 @header { package antlr; }
 
-IDENTIFIER : [a-zA-Z]+ [0-9a-zA-Z]*;
-UNSIGNED_INTEGER : [0-9]+;
-INTEGER : '-'? UNSIGNED_INTEGER;
-BOOL : 'true' | 'false';
 WS  :   ( ' ' | '\t' | '\r' '\n' | '\n' ) -> skip;
+BOOL : 'true' | 'false';
+IDENTIFIER : [a-zA-Z]+ [0-9a-zA-Z]*;
+INTEGER : '-'? [0-9]+;
 
 translationUnit : funDef+;
 
@@ -15,9 +14,8 @@ funArg : name=IDENTIFIER ':' argType=type;
 
 type : 'void'  	#VoidType
 	 | 'int' 	#IntType
-	 | 'uint'  	#UintType
-	 | 'bool'   #BoolType
-	 | '[' elemType=type ';' size=UNSIGNED_INTEGER ']' #ArrayType;
+	 | 'bool'   #BoolType;
+	 //| '[' elemType=type ';' size=INTEGER ']' #ArrayType;
 
 block : '{' (statements+=expr ';')* lastexpr = expr? '}' ;
 
@@ -36,7 +34,6 @@ expr :
 // Non-control flow expressions
 | 'let ' name=IDENTIFIER ':' t=type '=' body=expr                 #VarDefExpr
 | INTEGER 					                                      #IntExpr
-| UNSIGNED_INTEGER                                                #UintExpr
 | name=IDENTIFIER 				                                  #IdExpr
 | '-' body=expr					                                  #NegExpr
 | lhs=expr '+' rhs=expr                                           #AddExpr

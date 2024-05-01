@@ -27,13 +27,6 @@ public interface IRTXTVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIRINT(IRTXTParser.IRINTContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code IRUINT}
-	 * labeled alternative in {@link IRTXTParser#irType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIRUINT(IRTXTParser.IRUINTContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code IRBOOL}
 	 * labeled alternative in {@link IRTXTParser#irType}.
 	 * @param ctx the parse tree

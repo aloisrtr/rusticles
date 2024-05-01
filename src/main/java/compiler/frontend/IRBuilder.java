@@ -44,8 +44,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	IRType translateType(TypeContext t) {
 		if (t instanceof IntTypeContext) {
 			return IRType.INT;
-		} else if (t instanceof UintTypeContext) {
-			return IRType.UINT;
 		} else if (t instanceof VoidTypeContext) {
 			return IRType.VOID;
 		} else if (t instanceof BoolTypeContext) {
@@ -98,31 +96,37 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitBlock(BlockContext ctx) {
 		// We create a new block, save it as in point and current point
-		IRBlock in =  currentFunction.addBlock();
-		IRBlock current = in;
-		currentBlock = current;
+		IRBlock entry =  currentFunction.addBlock();
+		IRBlock exit = entry;
+		this.currentBlock = exit;
 
 		// Create the symbol table for this.
 		this.symbolTable = this.symbolTable.initializeScope();
 
 		// Visit all children
-		for (ParseTree c : ctx.statements) {
-			BuilderResult res = this.visit(c);
-			if (res != null) {
-				current = res.entry;
+		for (ParseTree statement : ctx.statements) {
+			BuilderResult statement_ir = this.visit(statement);
+			if (statement_ir.hasBlock) {
+				exit.getSuccessors().add(statement_ir.entry);
+				exit = currentFunction.addBlock();
+				statement_ir.exit.getSuccessors().add(exit);
 			}
 		}
+
+		// Handle the return value of the block.
+		IRValue returned = null;
 		if (ctx.lastexpr != null) {
 			BuilderResult res = this.visit(ctx.lastexpr);
 			currentBlock.addTerminator(new IRReturn(res.value));
-		} else {
+			returned = res.value;
+		} else if (currentBlock.getTerminator() == null) {
 			currentBlock.addTerminator(new IRReturn(null));
 		}
 
 		// Finalize the current symbol table level
 		this.symbolTable = this.symbolTable.finalizeScope().get();
 
-		return new BuilderResult(true, in, current, null);
+		return new BuilderResult(true, entry, exit, returned);
 	}
 
 
@@ -136,7 +140,12 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		BuilderResult res = this.visit(ctx.body);
 		IRReturn newInstr = new IRReturn(res.value);
 		currentBlock.addOperation(newInstr);
-		return new BuilderResult(false, null, null, null);
+
+		if (currentFunction.getReturnType() != res.value.type) {
+			throw new RuntimeException("Function " + currentFunction.getName() + " returns a value of type " + currentFunction.getReturnType() + ", but tried to return " + res.value.type);
+		}
+		
+		return new BuilderResult(res.hasBlock, null, null, null);
 	}
 
 	@Override
@@ -159,7 +168,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRFunctionCallInstruction funcCall = new IRFunctionCallInstruction(func, returnType, args);
 		currentBlock.addOperation(funcCall);
 
-		return new BuilderResult(false, null, null, funcCall.getResult());
+		return new BuilderResult(true, null, null, funcCall.getResult());
 	}
 
 	/****************************************************************************
@@ -226,16 +235,19 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	 ****************************************************************************/
 	@Override
 	public BuilderResult visitVarDefExpr(VarDefExprContext ctx) {
-		IRType type = translateType(ctx.t);
-
+		IRType expected_type = this.translateType(ctx.t);
 		BuilderResult res = this.visit(ctx.body);
 		IRValue value = res.value;
+
+		if (value.type != expected_type) {
+			throw new RuntimeException("Variable " + ctx.name.getText() + " is of type " + expected_type + " but was assigned a value of type " + value.type);
+		}
 
 		// Add to the current symbol table the new variable
 		// Add of the IRValue in the current block
 		this.symbolTable.insert(ctx.name.getText(), value);
 
-		return new BuilderResult(false, null, null, null);
+		return new BuilderResult(res.hasBlock, null, null, null);
 	}
 
 	@Override
@@ -248,10 +260,13 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		if (symbolTable.lookup(ctx.name.getText()).isEmpty()) {
 			throw new RuntimeException("Variable " + ctx.name.getText() + " not found in symbol table");
 		}
+		if (symbolTable.lookup(ctx.name.getText()).get().value.type != res.value.type) {
+			throw new RuntimeException("Variable " + ctx.name.getText() + " is of type " + symbolTable.lookup(ctx.name.getText()).get().value.type + " but was assigned a value of type " + res.value.type);
+		}
 
 		symbolTable.insert(ctx.name.getText(), res.value);
 
-		return new BuilderResult(false, null, null, null);
+		return new BuilderResult(res.hasBlock, null, null, null);
 	}
 
 	@Override
@@ -262,14 +277,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		currentBlock.addOperation(instr);
 
-		return new BuilderResult(false, null, null, instr.getResult());
-	}
-
-	@Override
-	public BuilderResult visitUintExpr(UintExprContext ctx) {
-		Integer val = Integer.parseUnsignedInt(ctx.children.getFirst().getText());
-		IRConstantInstruction<Integer> instr = new IRConstantInstruction<>(IRType.UINT, val);
-		currentBlock.addOperation(instr);
 		return new BuilderResult(false, null, null, instr.getResult());
 	}
 
@@ -285,9 +292,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		// Key function for having SSA working properly
 		Optional<VariableInfo> entry = symbolTable.lookup(ctx.name.getText());
 		if (entry.isPresent()) {
-
 			IRValue val = entry.get().value;
-			if (currentBlock.getPredecessors().size() > 1) {
+			if (currentBlock.getPredecessors().size() == 1) {
 				IRPhiOperation phi = new IRPhiOperation(val.getType());
 				for (IRBlock pred : phi.getContainingBlock().getPredecessors()) {
 					phi.addOperand(symbolTable.parent.lookup(ctx.name.getText()).get().value);
@@ -302,80 +308,104 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	@Override
 	public BuilderResult visitNegExpr(NegExprContext ctx) {
-		BuilderResult res1 = ctx.body.accept(this);
+		BuilderResult res = this.visit(ctx.body);
 
 		IRConstantInstruction<Integer> zeroCst = new IRConstantInstruction<>(IRType.INT, 0);
-		IRSubInstruction instr = new IRSubInstruction(zeroCst.getResult(), res1.value);
+		IRSubInstruction instr = new IRSubInstruction(zeroCst.getResult(), res.value);
 		currentBlock.addOperation(zeroCst);
 		currentBlock.addOperation(instr);
 
-		return new BuilderResult(false, null, null, instr.getResult());
+		return new BuilderResult(res.hasBlock, null, null, instr.getResult());
 	}
 
 	@Override
 	public BuilderResult visitAddExpr(AddExprContext ctx) {
-		BuilderResult res1 = this.visit(ctx.lhs);
-		BuilderResult res2 = this.visit(ctx.rhs);
+		BuilderResult lhs = this.visit(ctx.lhs);
+		BuilderResult rhs = this.visit(ctx.rhs);
 
-		IRAddInstruction instr = new IRAddInstruction(res1.value, res2.value);
+		if (lhs.value.type != rhs.value.type) {
+			throw new RuntimeException("Tried adding two values of different types: " + lhs.value + " + " + rhs.value);
+		}
+
+		IRAddInstruction instr = new IRAddInstruction(lhs.value, rhs.value);
 		currentBlock.addOperation(instr);
 
-		return new BuilderResult(false, null, null, instr.getResult());
+		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());
 	}
 
 	@Override
 	public BuilderResult visitSubExpr(SubExprContext ctx) {
-		BuilderResult res1 = this.visit(ctx.lhs);
-		BuilderResult res2 = this.visit(ctx.rhs);
+		BuilderResult lhs = this.visit(ctx.lhs);
+		BuilderResult rhs = this.visit(ctx.rhs);
+		
+		if (lhs.value.type != rhs.value.type) {
+			throw new RuntimeException("Tried subtracting two values of different types: " + lhs.value + " - " + rhs.value);
+		}
 
-		IRSubInstruction instr = new IRSubInstruction(res1.value, res2.value);
+		IRSubInstruction instr = new IRSubInstruction(lhs.value, rhs.value);
 		currentBlock.addOperation(instr);
 
-		return new BuilderResult(false, null, null, instr.getResult());
+		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());
 	}
 
 	@Override
 	public BuilderResult visitMulExpr(MulExprContext ctx) {
-		BuilderResult res1 = this.visit(ctx.lhs);
-		BuilderResult res2 = this.visit(ctx.rhs);
+		BuilderResult lhs = this.visit(ctx.lhs);
+		BuilderResult rhs = this.visit(ctx.rhs);
 
-		IRMulInstruction instr = new IRMulInstruction(res1.value, res2.value);
+		if (lhs.value.type != rhs.value.type) {
+			throw new RuntimeException("Tried multiplicating two values of different types: " + lhs.value + " * " + rhs.value);
+		}
+
+		IRMulInstruction instr = new IRMulInstruction(lhs.value, rhs.value);
 		currentBlock.addOperation(instr);
 
-		return new BuilderResult(false, null, null, instr.getResult());
+		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());
 	}
 
 	@Override
 	public BuilderResult visitDivExpr(DivExprContext ctx) {
-		BuilderResult res1 = this.visit(ctx.lhs);
-		BuilderResult res2 = this.visit(ctx.rhs);
+		BuilderResult lhs = this.visit(ctx.lhs);
+		BuilderResult rhs = this.visit(ctx.rhs);
 
-		IRDivInstruction instr = new IRDivInstruction(res1.value, res2.value);
+		if (lhs.value.type != rhs.value.type) {
+			throw new RuntimeException("Tried dividing two values of different types: " + lhs.value + " / " + rhs.value);
+		}
+
+		IRDivInstruction instr = new IRDivInstruction(lhs.value, rhs.value);
 		currentBlock.addOperation(instr);
 
-		return new BuilderResult(false, null, null, instr.getResult());
+		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());
 	}
 
 	@Override
 	public BuilderResult visitLthExpr(LthExprContext ctx) {
-		BuilderResult res1 = this.visit(ctx.lhs);
-		BuilderResult res2 = this.visit(ctx.rhs);
+		BuilderResult lhs = this.visit(ctx.lhs);
+		BuilderResult rhs = this.visit(ctx.rhs);
 
-		IRCompareLtInstruction instr = new IRCompareLtInstruction(res1.value, res2.value);
+		if (lhs.value.type != rhs.value.type) {
+			throw new RuntimeException("Tried comparing two values of different types: " + lhs.value + " < " + rhs.value);
+		}
+
+		IRCompareLtInstruction instr = new IRCompareLtInstruction(lhs.value, rhs.value);
 		currentBlock.addOperation(instr);
 
-		return new BuilderResult(false, null, null, instr.getResult());
+		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());
 	}
 
 	@Override
 	public BuilderResult visitGthExpr(GthExprContext ctx) {
-		BuilderResult res1 = this.visit(ctx.lhs);
-		BuilderResult res2 = this.visit(ctx.rhs);
+		BuilderResult lhs = this.visit(ctx.lhs);
+		BuilderResult rhs = this.visit(ctx.rhs);
 
-		IRCompareGtInstruction instr = new IRCompareGtInstruction(res1.value, res2.value);
+		if (lhs.value.type != rhs.value.type) {
+			throw new RuntimeException("Tried comparing two values of different types: " + lhs.value + " > " + rhs.value);
+		}
+
+		IRCompareGtInstruction instr = new IRCompareGtInstruction(lhs.value, rhs.value);
 		currentBlock.addOperation(instr);
 
-		return new BuilderResult(false, null, null, instr.getResult());
+		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());
 	}
 
 	@Override

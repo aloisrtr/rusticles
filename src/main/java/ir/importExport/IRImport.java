@@ -84,7 +84,6 @@ public class IRImport extends IRTXTBaseVisitor<IRObject> {
 		return switch(ctx) {
 			case IRTXTParser.IRVOIDContext st -> IRType.VOID;
 			case IRTXTParser.IRINTContext st -> IRType.INT;
-			case IRTXTParser.IRUINTContext st -> IRType.UINT;
 			case IRTXTParser.IRADDRContext st -> IRType.ADDR;
 			case IRTXTParser.IRBOOLContext st -> IRType.BOOL;
 			default -> throw new IllegalArgumentException("Unexpected value: " + ctx);

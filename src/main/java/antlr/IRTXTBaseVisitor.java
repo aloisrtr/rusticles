@@ -34,13 +34,6 @@ public class IRTXTBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitIRUINT(IRTXTParser.IRUINTContext ctx) { return visitChildren(ctx); }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitIRBOOL(IRTXTParser.IRBOOLContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

@@ -12,7 +12,6 @@ WS  :   ( ' ' | '\t' | '\r' '\n' | '\n' ) -> skip;
 
 irType : 'VOID'  	#IRVOID
 	| 'INT' 	#IRINT
-	| 'UINT'  	#IRUINT
 	| 'BOOL'    #IRBOOL
 	| 'ADDR'    #IRADDR;
 	

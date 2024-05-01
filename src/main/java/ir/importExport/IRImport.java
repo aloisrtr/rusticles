@@ -125,7 +125,7 @@ public class IRImport extends IRTXTBaseVisitor<IRObject> {
 			argTypes.add(visitIrType(oneArg.type));
 		}
 		
-		IRFunction result = new IRFunction(ctx.name.getText(), IRType.UINT, argTypes);
+		IRFunction result = new IRFunction(ctx.name.getText(), IRType.INT, argTypes);
 		
 		//We register the function
 		this.idToFuncMap.put(ctx.name.getText(), result);

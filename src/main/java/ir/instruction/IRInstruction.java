@@ -11,9 +11,7 @@ public abstract class IRInstruction extends IROperation {
 
     // Used to get the type of the result of a binary instruction
     protected IRType getBinaryOpResultType(IRType type1, IRType type2) {
-        if (type1 == IRType.UINT || type2 == IRType.UINT) {
-            return IRType.UINT;
-        } else if (type1 == IRType.INT && type2 == IRType.INT) {
+        if (type1 == IRType.INT && type2 == IRType.INT) {
             return IRType.INT;
         } else {
             return null;

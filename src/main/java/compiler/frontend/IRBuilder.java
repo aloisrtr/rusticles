@@ -91,7 +91,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		currentFunction = func;
 
 		// We just visit the body
-		BuilderResult res = visitBlock(ctx.body);
+		BuilderResult res = this.visit(ctx.body);
 		if (res != null) {
 			if (res.value != null) {
 				if (res.value.type != currentFunction.getReturnType()) {
@@ -100,6 +100,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 				currentFunction.getBlocks().getLast().addTerminator(new IRReturn(res.value));
 			} else if (currentFunction.getReturnType() != null && res.value != null) {
 				throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of VOID, but returned type " + res.value.type);
+			} else if (currentFunction.getBlocks().getLast().getTerminator() == null) {
+				currentFunction.getBlocks().getLast().addTerminator(new IRReturn(null));
 			}
 		}
 
@@ -167,7 +169,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			args.add(res.value);
 		}
 
-		IRType returnType = IRType.UINT;
+		IRType returnType = null;
 		IRFunction func = null;
 		for (IRFunction f : top.getFunctions()) {
 			if (f.getName().equals(ctx.name.getText())) {
@@ -197,6 +199,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		BuilderResult else_block = this.visit(ctx.elseBody);
 
 		IRCondBr condBr = new IRCondBr(cond.value, if_block.entry, else_block.entry);
+		currentBlock = begin;
 		currentBlock.addTerminator(condBr);
 
 		// Creation End block

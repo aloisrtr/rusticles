@@ -94,7 +94,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		BuilderResult res = this.visit(ctx.body);
 		if (res != null) {
 			if (res.value != null) {
-				if (res.value.type != currentFunction.getReturnType()) {
+				if (res.value.type != currentFunction.getReturnType() && res.value.type != IRType.RETURN) {
 					throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of " + currentFunction.getReturnType() + ", but returned type " + res.value.type);
 				}
 				currentFunction.getBlocks().getLast().addTerminator(new IRReturn(res.value));
@@ -157,7 +157,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			throw new RuntimeException("Function " + currentFunction.getName() + " returns a value of type " + currentFunction.getReturnType() + ", but tried to return " + res.value.type);
 		}
 		
-		return new BuilderResult(res.hasBlock, null, null, null);
+		return new BuilderResult(res.hasBlock, null, null, new IRValue(IRType.RETURN, null));
+
 	}
 
 	@Override
@@ -189,13 +190,35 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	 ****************************************************************************/
 	@Override
 	public BuilderResult visitIfExpr(IfExprContext ctx) {
-		// Creation Begin Block
-		IRBlock begin = currentFunction.addBlock();
-		currentBlock = begin;
+		// We get the beginning block
+		IRBlock begin = currentBlock;
 
 		// Visit of the condition, if and else blocks
 		BuilderResult cond = this.visit(ctx.cond);
 		BuilderResult if_block = this.visit(ctx.ifBody);
+
+		if (ctx.elseBody == null) {
+
+			// Creation End block
+			IRBlock end = currentFunction.addBlock();
+			IRGoto gotoEnd = new IRGoto(end);
+
+			// Cond false we connect directly to the end block
+			IRCondBr condBr = new IRCondBr(cond.value, if_block.entry, end);
+			currentBlock = begin;
+			currentBlock.addTerminator(condBr);
+
+			// Link if and else blocks to the End block
+			if_block.exit.addTerminator(gotoEnd);
+
+			// Check that if and else blocks have the same type
+			if (if_block.value.getType() != IRType.VOID && if_block.value.getType() != IRType.RETURN) {
+				throw new RuntimeException("Else block is empty If block must have type Void here");
+			}
+			currentBlock = end;
+
+			return new BuilderResult(true, cond.entry, end, new IRValue(IRType.VOID, null));
+		}
 		BuilderResult else_block = this.visit(ctx.elseBody);
 
 		IRCondBr condBr = new IRCondBr(cond.value, if_block.entry, else_block.entry);
@@ -232,7 +255,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		BuilderResult end = this.visit(ctx.end);
 		BuilderResult body = this.visit(ctx.body);
 		this.symbolTable.insert(ctx.name.getText(), begin.value);
-		return new BuilderResult(true, null, null, null);
+		return new BuilderResult(true, null, null, new IRValue(IRType.VOID, null));
 	}
 
 	@Override
@@ -249,7 +272,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		body_res.exit.addTerminator(new IRGoto(cond_block));
 
 		this.currentBlock = exit;
-		return new BuilderResult(true, cond_block, exit, null);
+		return new BuilderResult(true, cond_block, exit, new IRValue(IRType.VOID, null));
 	}
 
 	/****************************************************************************
@@ -270,7 +293,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		// Add of the IRValue in the current block
 		this.symbolTable.insert(ctx.name.getText(), value);
 
-		return new BuilderResult(res.hasBlock, null, null, null);
+		return new BuilderResult(res.hasBlock, null, null, new IRValue(IRType.VOID, null));
 	}
 
 	@Override
@@ -289,7 +312,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		symbolTable.insert(ctx.name.getText(), res.value);
 
-		return new BuilderResult(res.hasBlock, null, null, null);
+		return new BuilderResult(res.hasBlock, null, null, new IRValue(IRType.VOID, null));
 	}
 
 	@Override
@@ -377,7 +400,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		BuilderResult rhs = this.visit(ctx.rhs);
 
 		if (lhs.value.type != rhs.value.type) {
-			throw new RuntimeException("Tried multiplicating two values of different types: " + lhs.value + " * " + rhs.value);
+			throw new RuntimeException("Multiplicating two values of different types: " + lhs.value + " * " + rhs.value);
 		}
 
 		IRMulInstruction instr = new IRMulInstruction(lhs.value, rhs.value);

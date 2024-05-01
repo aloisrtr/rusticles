@@ -1,7 +1,7 @@
 fn testif(a: int) : void {
     if (true) {
-    let a : int = 1
+    3
     } else {
-    let a : int = 2
+    2
     };
 }

@@ -4,5 +4,7 @@ fn testif(a: int) : int {
         a * 4
     } else if (a > 4) {
         a + 2
+    } else {
+        a - 1
     }
 }

@@ -15,14 +15,12 @@ funArg : name=IDENTIFIER ':' argType=type;
 type : 'void'  	#VoidType
 	 | 'int' 	#IntType
 	 | 'bool'   #BoolType;
-	 //| '[' elemType=type ';' size=INTEGER ']' #ArrayType;
 
 block : '{' (statements+=expr ';')* lastexpr = expr? '}' ;
 
 assign : name=IDENTIFIER '=' body=expr;
 
 expr :
-// Return/call
 'return' body=expr                                                #ReturnExpr
 | BOOL                                                            #BoolExpr
 | assign                                                          #VarAssignExpr

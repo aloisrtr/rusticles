@@ -237,12 +237,19 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	@Override
 	public BuilderResult visitWhileExpr(WhileExprContext ctx) {
-		IRBlock in = this.currentBlock;
-		IRBlock condBlock = currentFunction.addBlock();
-		this.currentBlock = condBlock;
-		BuilderResult cond = this.visit(ctx.condition);
-		BuilderResult body = this.visit(ctx.body);
-		return new BuilderResult(true, in, condBlock, null);
+		IRBlock cond_block = this.currentFunction.addBlock();
+		this.currentBlock = cond_block;
+		BuilderResult cond_res = this.visit(ctx.condition);
+		BuilderResult body_res = this.visit(ctx.body);
+
+		IRBlock exit = currentFunction.addBlock();
+		IRCondBr condBr = new IRCondBr(cond_res.value, body_res.entry, exit);
+		cond_block.addTerminator(condBr);
+
+		body_res.exit.addTerminator(new IRGoto(cond_block));
+
+		this.currentBlock = exit;
+		return new BuilderResult(true, cond_block, exit, null);
 	}
 
 	/****************************************************************************

@@ -1,5 +1,5 @@
 package ir.core;
 
 public enum IRType implements IRObject {
-    INT, VOID, BOOL, ADDR,
+    INT, VOID, BOOL, ADDR, RETURN
 }

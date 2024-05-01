@@ -218,9 +218,12 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRPhiOperation phiIfElse = new IRPhiOperation(if_block.value.getType());
 		phiIfElse.addOperand(if_block.value);
 		phiIfElse.addOperand(else_block.value);
-		IRValue phiIfElseValue = phiIfElse.getResult();
 
-		return new BuilderResult(true, cond.entry, end, phiIfElseValue);
+		// Add Phi Operation of then and else value to the end block
+		end.addOperation(phiIfElse);
+		currentBlock = end;
+
+		return new BuilderResult(true, cond.entry, end, phiIfElse.getResult());
 	}
 
 	@Override

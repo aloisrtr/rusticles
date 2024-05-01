@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.management.RuntimeErrorException;
+
 import ir.core.*;
 import ir.terminator.IRCondBr;
 import jdk.jfr.Unsigned;
@@ -89,7 +91,18 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		currentFunction = func;
 
 		// We just visit the body
-		visitBlock(ctx.body);
+		BuilderResult res = visitBlock(ctx.body);
+		if (res != null) {
+			if (res.value != null) {
+				if (res.value.type != currentFunction.getReturnType()) {
+					throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of " + currentFunction.getReturnType() + ", but returned type " + res.value.type);
+				}
+				currentFunction.getBlocks().getLast().addTerminator(new IRReturn(res.value));
+			} else if (currentFunction.getReturnType() != null && res.value != null) {
+				throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of VOID, but returned type " + res.value.type);
+			}
+		}
+
 		// Don't care about the value returned
 		return null;
 	}
@@ -117,10 +130,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRValue returned = null;
 		if (ctx.lastexpr != null) {
 			BuilderResult res = this.visit(ctx.lastexpr);
-			currentBlock.addTerminator(new IRReturn(res.value));
 			returned = res.value;
-		} else if (currentBlock.getTerminator() == null) {
-			currentBlock.addTerminator(new IRReturn(null));
 		}
 
 		// Finalize the current symbol table level
@@ -281,7 +291,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 
 	public BuilderResult visitBoolExpr(BoolExprContext ctx) {
-		Integer val = Objects.equals(ctx.children.getFirst().getText(), "true") ? 1 : 0;
+		Integer val = ctx.getText().equals("true") ? 1 : 0;
 		IRConstantInstruction<Integer> instr = new IRConstantInstruction<>(IRType.BOOL, val);
 		currentBlock.addOperation(instr);
 		return new BuilderResult(false, null, null, instr.getResult());

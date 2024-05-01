@@ -1,4 +1,4 @@
-fn testif(a: int) : void {
+fn testif(a: int) : int {
     let a : int = 3;
     if (a > 2) {
     3

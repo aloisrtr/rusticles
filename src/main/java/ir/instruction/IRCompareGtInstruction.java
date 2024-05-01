@@ -11,7 +11,7 @@ public class IRCompareGtInstruction extends IRInstruction {
         super();
         this.addOperand(operand1);
         this.addOperand(operand2);
-        this.addResult(IRType.UINT);
+        this.addResult(IRType.BOOL);
     }
 
     @Override

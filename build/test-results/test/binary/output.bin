@@ -1,208 +1,0 @@
-8----- Content from - src/test/resources/test_a.sc -----
------ Content Parsed -----
-
-fn empty() : void {
-}
------ IR Built -----
-
-function empty () : VOID {
-  block_0 {
-    return
-  }
-}
-
------ IR Tested -----
-9----- Content from - src/test/resources/test_aa.sc -----
------ Content Parsed -----
-
-fn main() : int {
-
-	return 4
-}
------ IR Built -----
-
-function main () : INT {
-  block_0 {
-    %2 = 4 : UINT
-    return %2
-    return
-  }
-}
-
------ IR Tested -----
-:----- Content from - src/test/resources/test_aaa.sc -----
------ Content Parsed -----
-
-fn main() : int {
-	return 4;
-}
------ IR Built -----
-
-function main () : INT {
-  block_0 {
-    %4 = 4 : UINT
-    return %4
-    return
-  }
-}
-
------ IR Tested -----
-9----- Content from - src/test/resources/test_ab.sc -----
------ Content Parsed -----
-
-fn main(a: int) : int {
-	42
-}
------ IR Built -----
-
-!function main (%6 : INT) : INT {
-  block_0 {
-    %7 = 42 : UINT
-    return %7
-  }
-}
-
------ IR Tested -----
-9----- Content from - src/test/resources/test_ac.sc -----
------ Content Parsed -----
-
-fn main() : void {
-	let a : int = 4
-}
------ IR Built -----
-
-function main () : VOID {
-  block_0 {
-    %9 = 4 : UINT
-    return
-  }
-}
-
------ IR Tested -----
-9----- Content from - src/test/resources/test_ad.sc -----
------ Content Parsed -----
-
-fn main() : void {
-	let a : int = 4;
-}
------ IR Built -----
-
-function main () : VOID {
-  block_0 {
-    %11 = 4 : UINT
-    return
-  }
-}
-
------ IR Tested -----
-9----- Content from - src/test/resources/test_ae.sc -----
------ Content Parsed -----
-
-fn main() : void {
-	1 + 3 * 4;
-}
------ IR Built -----
-
-function main () : VOID {
-  block_0 {
-    %13 = 1 : UINT
-    %14 = 3 : UINT
-    %15 = add %13, %14 : UINT
-    %16 = 4 : UINT
-    %17 = mul %15, %16 : UINT
-    return
-  }
-}
-
------ IR Tested -----
-:----- Content from - src/test/resources/test_aea.sc -----
------ Content Parsed -----
-
-fn main() : void {
-	1 + 3 * 4
-}
------ IR Built -----
-
-function main () : VOID {
-  block_0 {
-    %19 = 1 : UINT
-    %20 = 3 : UINT
-    %21 = add %19, %20 : UINT
-    %22 = 4 : UINT
-    %23 = mul %21, %22 : UINT
-    return %23
-  }
-}
-
------ IR Tested -----
-:----- Content from - src/test/resources/test_aeb.sc -----
------ Content Parsed -----
-
-fn main() : void {
-	let a : int = 3;
-	a = a + 1
-}
------ IR Built -----
-
-function main () : VOID {
-  block_0 {
-    %25 = 3 : UINT
-    %26 = 1 : UINT
-    %27 = add %25, %26 : UINT
-    return
-  }
-}
-
------ IR Tested -----
-;----- Content from - src/test/resources/test_aeba.sc -----
------ Content Parsed -----
-
-fn main() : void {
-	let a : int = 3;
-	a = 2 + 1
-}
------ IR Built -----
-
-function main () : VOID {
-  block_0 {
-    %29 = 3 : UINT
-    %30 = 2 : UINT
-    %31 = 1 : UINT
-    %32 = add %30, %31 : UINT
-    return
-  }
-}
-
------ IR Tested -----
-<----- Content from - src/test/resources/test_aebaa.sc -----
------ Content Parsed -----
-
-fn main() : void {
-	let a : int = 3;
-	a = 2 + 1;
-}
------ IR Built -----
-
-function main () : VOID {
-  block_0 {
-    %34 = 3 : UINT
-    %35 = 2 : UINT
-    %36 = 1 : UINT
-    %37 = add %35, %36 : UINT
-    return
-  }
-}
-
------ IR Tested -----
-<----- Content from - src/test/resources/test_aebab.sc -----
------ Content Parsed -----
-
-fn main() : void {
-	let a : int = 3;
-	a = 2 - 1
-}
------ IR Built -----
-
-function main () : VOID {
-  block_0 {
-    %39 = 3 :

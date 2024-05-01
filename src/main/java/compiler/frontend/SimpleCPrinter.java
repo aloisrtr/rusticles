@@ -129,6 +129,10 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	public String visitIntExpr(SimpleCParser.IntExprContext ctx) {
 		return ctx.getText();
 	}
+	@Override
+	public String visitBoolExpr(SimpleCParser.BoolExprContext ctx) {
+		return ctx.getText();
+	}
 
 	@Override
 	public String visitAddExpr(SimpleCParser.AddExprContext ctx) {

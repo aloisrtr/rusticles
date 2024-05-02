@@ -28,6 +28,9 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	public static IRTopLevel buildTopLevel(ParseTree t) {
 		IRBuilder builder = new IRBuilder();
 		builder.visit(t);
+		// Uncomment to debug symbol table
+		// System.out.println("--- Symbol table ---");
+		// System.out.println(builder.symbolTable);
 		return builder.top;
 	}
 
@@ -52,12 +55,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	public BuilderResult visitTranslationUnit(TranslationUnitContext ctx) {
 		top = new IRTopLevel();
 		for (ParseTree function : ctx.children) {
-			this.symbolTable = this.symbolTable.initializeScope();
 			this.visit(function);
-			if (this.symbolTable.finalizeScope().isEmpty()) {
-				throw new RuntimeException("Symbol table is empty in visit of TranslationUnit");
-			}
-			this.symbolTable = this.symbolTable.finalizeScope().get();
 		}
 		// Useless -> we return null
 		return null;
@@ -132,10 +130,11 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		}
 
 		// Finalize the current symbol table level
-		if (this.symbolTable.finalizeScope().isEmpty()) {
-			throw new RuntimeException("Symbol table is empty");
+		Optional<SymbolTable> parent_table = this.symbolTable.finalizeScope();
+		if (parent_table.isEmpty()) {
+			throw new RuntimeException("Symbol table has not been handled correctly");
 		}
-		this.symbolTable = this.symbolTable.finalizeScope().get();
+		this.symbolTable = parent_table.get();
 
 		return new BuilderResult(true, entry, exit, returned);
 	}

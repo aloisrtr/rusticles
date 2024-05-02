@@ -4,6 +4,7 @@ import ir.core.IRValue;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Vector;
+import java.util.Map.Entry;
 
 public class SymbolTable {
 	SymbolTable parent = null;
@@ -43,5 +44,25 @@ public class SymbolTable {
 			return parent.lookup(name);
 		}
 		return Optional.empty();
+	}
+
+	/// Pretty printing of the symbol table in its current form
+	public String toString() {
+		if (this.parent == null) {
+			return this.toStringInner(0);
+		} else {
+			return this.parent.toString();
+		}
+	}
+
+	private String toStringInner(int depth) {
+		StringBuilder result = new StringBuilder("-".repeat(depth) + ">\n");
+		for (Entry<String, VariableInfo> entry : this.symbols.entrySet()) {
+			result.append("+" + "-".repeat(depth) + " " + entry.getKey() + " = " + entry.getValue() + '\n');
+		}
+		for (SymbolTable child : this.children) {
+			result.append(child.toStringInner(depth + 1));
+		}
+		return result.toString();
 	}
 }

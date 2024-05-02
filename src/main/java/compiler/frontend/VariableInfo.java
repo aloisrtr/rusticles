@@ -7,4 +7,8 @@ public class VariableInfo {
     public VariableInfo(IRValue value) {
         this.value = value;
     }
+
+    public String toString() {
+        return this.value.toString();
+    }
 }

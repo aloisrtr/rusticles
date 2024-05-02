@@ -196,7 +196,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		BuilderResult if_block = this.visit(ctx.ifBody);
 
 		if (ctx.elseBody == null) {
-
 			// Creation End block
 			IRBlock end = currentFunction.addBlock();
 			IRGoto gotoEnd = new IRGoto(end);
@@ -215,7 +214,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			}
 			currentBlock = end;
 
-			return new BuilderResult(true, cond.entry, end, new IRValue(IRType.VOID, null));
+			return new BuilderResult(true, begin, end, new IRValue(IRType.VOID, null));
 		}
 
 		// IRBlock entry_else_block = currentFunction.addBlock();

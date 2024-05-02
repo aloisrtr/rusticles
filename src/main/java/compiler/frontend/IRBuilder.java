@@ -2,19 +2,12 @@ package compiler.frontend;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import javax.management.RuntimeErrorException;
-
 import ir.core.*;
 import ir.terminator.IRCondBr;
-import jdk.jfr.Unsigned;
 import org.antlr.v4.runtime.tree.ParseTree;
-
 import antlr.SimpleCBaseVisitor;
 import antlr.SimpleCParser.*;
-
 import ir.instruction.IRAddInstruction;
 import ir.instruction.IRCompareGtInstruction;
 import ir.instruction.IRCompareLtInstruction;
@@ -61,6 +54,9 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		for (ParseTree function : ctx.children) {
 			this.symbolTable = this.symbolTable.initializeScope();
 			this.visit(function);
+			if (this.symbolTable.finalizeScope().isEmpty()) {
+				throw new RuntimeException("Symbol table is empty in visit of TranslationUnit");
+			}
 			this.symbolTable = this.symbolTable.finalizeScope().get();
 		}
 		// Useless -> we return null
@@ -110,7 +106,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 	@Override
 	public BuilderResult visitBlock(BlockContext ctx) {
-		// We create a new block, save it as in point and current point
+		// We create a new block, save it as entry point and current point
 		IRBlock entry =  currentFunction.addBlock();
 		IRBlock exit = entry;
 		this.currentBlock = exit;
@@ -136,6 +132,9 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		}
 
 		// Finalize the current symbol table level
+		if (this.symbolTable.finalizeScope().isEmpty()) {
+			throw new RuntimeException("Symbol table is empty");
+		}
 		this.symbolTable = this.symbolTable.finalizeScope().get();
 
 		return new BuilderResult(true, entry, exit, returned);
@@ -219,18 +218,30 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 			return new BuilderResult(true, cond.entry, end, new IRValue(IRType.VOID, null));
 		}
+
+		// IRBlock entry_else_block = currentFunction.addBlock();
+		// currentBlock = entry_else_block;
 		BuilderResult else_block = this.visit(ctx.elseBody);
+		// else_block.entry = entry_else_block;
+
+		if (else_block.entry == null) {
+			throw new RuntimeException("Else block is not empty but the entry block is null");
+		}
 
 		IRCondBr condBr = new IRCondBr(cond.value, if_block.entry, else_block.entry);
+
+		begin.addTerminator(condBr);
 		currentBlock = begin;
-		currentBlock.addTerminator(condBr);
 
 		// Creation End block
 		IRBlock end = currentFunction.addBlock();
 		IRGoto gotoEnd = new IRGoto(end);
 
-		// Link if and else blocks to the End block
+		// Link if to the End block
 		if_block.exit.addTerminator(gotoEnd);
+
+
+		// Link else to the End block
 		else_block.exit.addTerminator(gotoEnd);
 
 		// Check that if and else blocks have the same type
@@ -240,20 +251,21 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		// Recuperation of the phi value out of the if and else blocks
 		IRPhiOperation phiIfElse = new IRPhiOperation(if_block.value.getType());
 		phiIfElse.addOperand(if_block.value);
+
 		phiIfElse.addOperand(else_block.value);
 
 		// Add Phi Operation of then and else value to the end block
 		end.addOperation(phiIfElse);
 		currentBlock = end;
 
-		return new BuilderResult(true, cond.entry, end, phiIfElse.getResult());
+		return new BuilderResult(false, begin, end, phiIfElse.getResult());
 	}
 
 	@Override
 	public BuilderResult visitForExpr(ForExprContext ctx) {
 		BuilderResult begin = this.visit(ctx.begin);
-		BuilderResult end = this.visit(ctx.end);
-		BuilderResult body = this.visit(ctx.body);
+		// BuilderResult end = this.visit(ctx.end);
+		// BuilderResult body = this.visit(ctx.body);
 		this.symbolTable.insert(ctx.name.getText(), begin.value);
 		return new BuilderResult(true, null, null, new IRValue(IRType.VOID, null));
 	}
@@ -342,6 +354,9 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			if (currentBlock.getPredecessors().size() == 1) {
 				IRPhiOperation phi = new IRPhiOperation(val.getType());
 				for (IRBlock pred : phi.getContainingBlock().getPredecessors()) {
+					if (symbolTable.parent.lookup(ctx.name.getText()).isEmpty()) {
+						throw new RuntimeException("Variable " + ctx.name.getText() + " not found in symbol table");
+					}
 					phi.addOperand(symbolTable.parent.lookup(ctx.name.getText()).get().value);
 				}
 				val = phi.getResult();
@@ -400,7 +415,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		BuilderResult rhs = this.visit(ctx.rhs);
 
 		if (lhs.value.type != rhs.value.type) {
-			throw new RuntimeException("Multiplicating two values of different types: " + lhs.value + " * " + rhs.value);
+			throw new RuntimeException("Multiplication of two values of different types: " + lhs.value + " * " + rhs.value);
 		}
 
 		IRMulInstruction instr = new IRMulInstruction(lhs.value, rhs.value);

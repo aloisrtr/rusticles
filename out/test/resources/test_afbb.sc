@@ -1,8 +1,9 @@
 fn testif(a: int) : int {
     if (true) {
-    3
+        3
     } else if (false) {
-    12
-    }
+        12
+    } else {
+        42
+    };
 }
-# should not work

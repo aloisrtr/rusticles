@@ -93,7 +93,11 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 				if (res.value.type != currentFunction.getReturnType() && res.value.type != IRType.RETURN) {
 					throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of " + currentFunction.getReturnType() + ", but returned type " + res.value.type);
 				}
-				currentFunction.getBlocks().getLast().addTerminator(new IRReturn(res.value));
+				if (res.value.getType() == IRType.VOID) {
+					currentFunction.getBlocks().getLast().addTerminator(new IRReturn(null));
+				} else if (res.value.getType() != IRType.RETURN) {
+					currentFunction.getBlocks().getLast().addTerminator(new IRReturn(res.value));
+				}
 			} else if (currentFunction.getReturnType() != null && res.value != null) {
 				throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of VOID, but returned type " + res.value.type);
 			} else if (currentFunction.getBlocks().getLast().getTerminator() == null) {
@@ -125,10 +129,12 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		}
 
 		// Handle the return value of the block.
-		IRValue returned = null;
+		IRValue returned;
 		if (ctx.lastexpr != null) {
 			BuilderResult res = this.visit(ctx.lastexpr);
 			returned = res.value;
+		} else {
+			returned = new IRValue(IRType.VOID, null);
 		}
 
 		// Finalize the current symbol table level

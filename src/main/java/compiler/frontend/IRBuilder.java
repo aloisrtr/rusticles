@@ -148,6 +148,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitReturnExpr(ReturnExprContext ctx) {
 		BuilderResult res = this.visit(ctx.body);
+
 		IRReturn newInstr = new IRReturn(res.value);
 		currentBlock.addOperation(newInstr);
 
@@ -217,10 +218,9 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			return new BuilderResult(true, begin, end, new IRValue(IRType.VOID, null));
 		}
 
-		// IRBlock entry_else_block = currentFunction.addBlock();
-		// currentBlock = entry_else_block;
+		IRBlock entry_else_block = currentFunction.addBlock();
+		currentBlock = entry_else_block;
 		BuilderResult else_block = this.visit(ctx.elseBody);
-		// else_block.entry = entry_else_block;
 
 		if (else_block.entry == null) {
 			throw new RuntimeException("Else block is not empty but the entry block is null");
@@ -237,7 +237,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		// Link if to the End block
 		if_block.exit.addTerminator(gotoEnd);
-
 
 		// Link else to the End block
 		else_block.exit.addTerminator(gotoEnd);

@@ -78,6 +78,7 @@ public class IRBlock implements IRVisitableObject {
         // If already sealed, do nothing
         if (this.isSealed) {
             return;
+            // throw new RuntimeException("Block already sealed");
         }
 
         // Seal all incomplete phi operations in the block

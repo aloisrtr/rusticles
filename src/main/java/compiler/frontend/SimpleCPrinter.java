@@ -179,4 +179,10 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	public String visitNeqExpr(SimpleCParser.NeqExprContext ctx) {
 		return visit(ctx.lhs) + " != " + visit(ctx.rhs);
 	}
+
+	@Override
+	public String visitParenExpr(SimpleCParser.ParenExprContext cxt) {
+		return "(" + visit(cxt.body) + ")";
+	}
 }
+

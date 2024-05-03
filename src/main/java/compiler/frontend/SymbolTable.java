@@ -27,6 +27,7 @@ public class SymbolTable {
 
 	/// Looks up the information of a symbol in the table.
 	public IRValue lookup(String name, IRBlock block) {
+		// Error on variable not defined previously
 		if (this.symbols.get(name) == null) {
 			throw new RuntimeException("Tried to lookup variable " + name + " which has never been defined previously");
 		}
@@ -61,8 +62,6 @@ public class SymbolTable {
 		}
 
 		this.insert(name, block, result);
-		
 		return result;
 	}
-
 }

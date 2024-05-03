@@ -298,14 +298,14 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		// We link everything nice and tidy then.
 		IRBlock exit = this.currentFunction.addBlock();
-		header.addTerminator(new IRCondBr(header_build.value, body_build.entry, exit));
 		body_build.exit.addTerminator(new IRGoto(header));
 		header.seal(this.symbolTable);
+		header.addTerminator(new IRCondBr(header_build.value, body_build.entry, exit));
 		body_build.entry.seal(this.symbolTable);
 		body_build.exit.seal(this.symbolTable);
 		exit.seal(this.symbolTable);
-
 		this.currentBlock = exit;
+
 		return new BuilderResult(true, entry, exit, new IRValue(IRType.VOID, null));
 	}
 

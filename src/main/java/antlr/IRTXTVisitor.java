@@ -41,6 +41,20 @@ public interface IRTXTVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIRADDR(IRTXTParser.IRADDRContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code IRRETURN}
+	 * labeled alternative in {@link IRTXTParser#irType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIRRETURN(IRTXTParser.IRRETURNContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IRANY}
+	 * labeled alternative in {@link IRTXTParser#irType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIRANY(IRTXTParser.IRANYContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link IRTXTParser#irTop}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

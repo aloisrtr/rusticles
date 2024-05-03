@@ -8,9 +8,9 @@ INTEGER : '-'? [0-9]+;
 
 translationUnit : funDef+;
 
-funDef : 'fn' name=IDENTIFIER '(' (args += funArg ',')* args += funArg? ')' ':' returnType = type body = block ;
+funDef : 'fn' name=IDENTIFIER '(' (args += funArg ',')* args += funArg? ')' (':' returnType = type)? body = block ;
 
-funArg : name=IDENTIFIER ':' argType=type;
+funArg : name=IDENTIFIER (':' argType=type)?;
 
 type : 'void'  	#VoidType
 	 | 'int' 	#IntType
@@ -30,7 +30,7 @@ expr :
 | 'for' name=IDENTIFIER 'in' begin=expr '..' end=expr body=block  #ForExpr
 | 'while' '(' condition=expr ')' body=block                       #WhileExpr
 // Non-control flow expressions
-| 'let ' name=IDENTIFIER ':' t=type '=' body=expr                 #VarDefExpr
+| 'let ' name=IDENTIFIER (':' t=type)? '=' body=expr                 #VarDefExpr
 | INTEGER 					                                      #IntExpr
 | name=IDENTIFIER 				                                  #IdExpr
 | '-' body=expr					                                  #NegExpr

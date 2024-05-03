@@ -23,14 +23,20 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 				result.append(this.visit(c)).append(", ");
 			result.append(this.visit(ctx.args.get(num_args - 1)));
 		}
-		result.append(") : ");
-		result.append(this.visit(ctx.returnType));
+		result.append(")");
+		if (ctx.returnType != null) {
+			result.append(" : " + this.visit(ctx.returnType));
+		}
 		result.append(" ");
 		return result + this.visit(ctx.body);
 	}
 
 	public String visitFunArg(SimpleCParser.FunArgContext ctx) {
-		return ctx.name.getText() + ": " + this.visit(ctx.argType);
+		String type = "";
+		if (ctx.argType != null) {
+			type = ": " + this.visit(ctx.argType);
+		}
+		return ctx.name.getText() + type;
 	}
 
 	public String visitVoidType(SimpleCParser.VoidTypeContext ctx) {
@@ -101,9 +107,11 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 
 	@Override
 	public String visitVarDefExpr(SimpleCParser.VarDefExprContext ctx) {
-        return "let " + ctx.name.getText() + " : " +
-                visit(ctx.t) +
-                " = " + visit(ctx.body);
+		String type = "";
+		if (ctx.t != null) {
+			type = ": " + this.visit(ctx.t);
+		}
+    return "let " + ctx.name.getText() + type + " = " + visit(ctx.body);
 	}
 
 	@Override

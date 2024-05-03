@@ -25,6 +25,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	IRFunction currentFunction = null;
 	IRBlock currentBlock = null;
 	SymbolTable symbolTable = new SymbolTable();
+	boolean inFunctionBlock = true;
 
 	public static IRTopLevel buildTopLevel(ParseTree t) {
 		IRBuilder builder = new IRBuilder();
@@ -42,6 +43,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			return IRType.VOID;
 		} else if (t instanceof BoolTypeContext) {
 			return IRType.BOOL;
+		} else if (t == null) {
+			return IRType.ANY;
 		}
 		return null;
 	}
@@ -69,39 +72,30 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		// We instantiate a new function and add it in the toplevel with its own block.
 		IRFunction func = new IRFunction(ctx.name.getText(), translateType(ctx.returnType), argTypes);
+		top.addFunction(func);
+		currentFunction = func;
+		this.currentBlock = currentFunction.addBlock();
 
 		List<IRValue> args_value = func.getArgs();
-		// Create a block for the function arguments if any.
-		if (!args_value.isEmpty()) {
-			this.currentBlock = func.addBlock();
-		}
 		for (int i = 0; i < args_value.size(); i++) {
 			symbolTable.insert(argNames.get(i), this.currentBlock, args_value.get(i));
 		}
-
-		top.addFunction(func);
-
-		// We mark the newly created function as currentFunction : blocks will be added inside
-		currentFunction = func;
+		this.currentBlock.seal(this.symbolTable);
 
 		// We just visit the body
-		IRBlock current = this.currentBlock;
+		this.inFunctionBlock = true;
 		BuilderResult res = this.visit(ctx.body);
-		if (current != null) {
-			current.addTerminator(new IRGoto(res.entry));
-		}
-		if (res != null) {
+
+		// Check the return type
+		if (res != null && res.value.type != IRType.RETURN) {
+			this.typeInference(currentFunction.getReturnType(), res.value);
+
 			if (res.value != null) {
-				if (res.value.type != currentFunction.getReturnType() && res.value.type != IRType.RETURN) {
-					throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of " + currentFunction.getReturnType() + ", but returned type " + res.value.type);
-				}
 				if (res.value.getType() == IRType.VOID) {
-					currentFunction.getBlocks().getLast().addTerminator(new IRReturn(null));
+					res.exit.addTerminator(new IRReturn(null));
 				} else if (res.value.getType() != IRType.RETURN) {
-					currentFunction.getBlocks().getLast().addTerminator(new IRReturn(res.value));
+					res.exit.addTerminator(new IRReturn(res.value));
 				}
-			} else if (currentFunction.getReturnType() != null && res.value != null) {
-				throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of VOID, but returned type " + res.value.type);
 			} else if (res.exit.getTerminator() == null) {
 				res.exit.addTerminator(new IRReturn(null));
 			}
@@ -114,7 +108,12 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitBlock(BlockContext ctx) {
 		// We create a new block, save it as entry point and current point (since it is the sole block for now)
-		IRBlock entry = this.currentFunction.addBlock();
+		IRBlock entry = this.currentBlock;
+		if (!this.inFunctionBlock) {
+			entry = this.currentFunction.addBlock();
+		} else {
+			this.inFunctionBlock = false;
+		}
 		this.currentBlock = entry;
 
 		// Visit all children
@@ -160,9 +159,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRReturn newInstr = new IRReturn(res.value);
 		currentBlock.addOperation(newInstr);
 
-		if (currentFunction.getReturnType() != res.value.type) {
-			throw new RuntimeException("Function " + currentFunction.getName() + " returns a value of type " + currentFunction.getReturnType() + ", but tried to return " + res.value.type);
-		}
+		this.typeInference(currentFunction.getReturnType(), res.value);
 		
 		return new BuilderResult(res.hasBlock, res.entry, res.exit, new IRValue(IRType.RETURN, null));
 	}
@@ -198,6 +195,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	public BuilderResult visitIfExpr(IfExprContext ctx) {
 		// We get the beginning block
 		IRBlock begin = currentBlock;
+		begin.seal(this.symbolTable);
 
 		// Visit of the condition, if and else blocks
 		BuilderResult cond = this.visit(ctx.cond);
@@ -214,7 +212,10 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			currentBlock.addTerminator(condBr);
 
 			// Link if and else blocks to the End block
+			if_block.entry.seal(this.symbolTable);
+			if_block.exit.seal(this.symbolTable);
 			if_block.exit.addTerminator(gotoEnd);
+			end.seal(this.symbolTable);
 
 			// Check that if and else blocks have the same type
 			if (if_block.value.getType() != IRType.VOID && if_block.value.getType() != IRType.RETURN) {
@@ -236,6 +237,11 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRCondBr condBr = new IRCondBr(cond.value, if_block.entry, else_block.entry);
 
 		begin.addTerminator(condBr);
+		if_block.entry.seal(this.symbolTable);
+		if_block.exit.seal(this.symbolTable);
+		else_block.entry.seal(this.symbolTable);
+		else_block.exit.seal(this.symbolTable);
+
 		currentBlock = begin;
 
 		// Creation End block
@@ -247,6 +253,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		// Link else to the End block
 		else_block.exit.addTerminator(gotoEnd);
+		end.seal(this.symbolTable);
 
 		// Check that if and else blocks have the same type
 		if (if_block.value.getType() != else_block.value.getType()) {
@@ -277,10 +284,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitWhileExpr(WhileExprContext ctx) {
 		// Create the entry block, where our initial values will be created.
-		IRBlock entry = this.currentFunction.addBlock();
-		entry.getPredecessors().add(this.currentBlock);
-		entry.seal(this.symbolTable);
-		this.currentBlock = entry;
+		IRBlock entry = this.currentBlock;
+		this.currentBlock.seal(this.symbolTable);
 
 		// Our header is the one going to check if the loop should continue or not.
 		IRBlock header = this.currentFunction.addBlock();
@@ -314,9 +319,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		BuilderResult res = this.visit(ctx.body);
 		IRValue value = res.value;
 
-		if (value.type != expected_type) {
-			throw new RuntimeException("Variable " + ctx.name.getText() + " is of type " + expected_type + " but was assigned a value of type " + value.type);
-		}
+		this.typeInference(expected_type, value);
 
 		// Add to the current symbol table the new variable
 		// Add of the IRValue in the current block
@@ -456,13 +459,29 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	}
 
 	private void typeInference(IRValue a, IRValue b) {
+		if (a == null && b != null) {
+			throw new RuntimeException("Type inference failed: " + a + " is of type " + IRType.VOID + " while " + b + " is of type" + b.type);
+		} else if (a != null && b == null) {
+			throw new RuntimeException("Type inference failed: " + a + " is of type " + a.type + " while " + b + " is of type" + IRType.VOID);
+		}
+		
 		if (a.type == IRType.ANY) {
 			a.type = b.type;
 		} else if (b.type == IRType.ANY) {
 			b.type = a.type;
 		} else if (a.type != b.type) {
-			throw new RuntimeException("Type inference failed: " + a + " and " + b + " are of different types");
+			throw new RuntimeException("Type inference failed: " + a + " is of type " + a.type + " while " + b + " is of type" + b.type);
 		}
 	}
-
+	private void typeInference(IRType expected, IRValue actual) {
+		if (actual == null && expected != IRType.VOID) {
+			throw new RuntimeException("Type inference failed: " + actual + " is of type " + IRType.VOID + " but expected " + expected);
+		}
+		
+		if (actual.type == IRType.ANY) {
+			actual.type = expected;
+		} else if (expected != IRType.ANY && actual.type != expected) {
+			throw new RuntimeException("Type inference failed: " + actual + " is of type " + actual.type + " but expected " + expected);
+		}
+	}
 }

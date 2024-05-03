@@ -1,9 +1,12 @@
 package ir.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
+import compiler.frontend.SymbolTable;
 import ir.terminator.IRTerminator;
 
 public class IRBlock implements IRVisitableObject {
@@ -15,6 +18,9 @@ public class IRBlock implements IRVisitableObject {
      * !< List of predecessors in the control flow graph. Built automatically when
      * calling addTerminator() on a block
      */
+
+	  private HashMap<String, IRPhiOperation> incompletePhi = new HashMap<>();
+    private boolean isSealed = false;
     
     public final IRFunction containingFunction;
 
@@ -53,12 +59,37 @@ public class IRBlock implements IRVisitableObject {
         return predecessors;
     }
 
+    public void addPredecessor(IRBlock block) {
+        this.predecessors.add(block);
+    }
+
     public List<IROperation> getOperations() {
         return operations;
     }
     
     public int getBlockIndexInContainingFunc() {
     	return this.containingFunction.getBlocks().indexOf(this);
+    }
+
+    public void addIncompletePhi(String name, IRPhiOperation phi) {
+        this.incompletePhi.put(name, phi);
+    }
+    public void seal(SymbolTable table) {
+        if (this.isSealed) {
+            return;
+        }
+        
+        for (Entry<String, IRPhiOperation> entry : this.incompletePhi.entrySet()) {
+            String variable = entry.getKey();
+            IRPhiOperation phi = entry.getValue();
+            for (IRBlock predecessor : this.getPredecessors()) {
+                phi.addOperand(table.lookup(variable, predecessor));
+            }
+        }
+        this.isSealed = true;
+    }
+    public boolean isSealed() {
+        return this.isSealed;
     }
     
     @Override

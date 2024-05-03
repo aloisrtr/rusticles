@@ -1,68 +1,69 @@
 package compiler.frontend;
 
+import ir.core.IRBlock;
+import ir.core.IRPhiOperation;
 import ir.core.IRValue;
+
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.Vector;
+import java.util.Set;
 import java.util.Map.Entry;
 
+// Handles the local value numbering for variables.
 public class SymbolTable {
-	SymbolTable parent = null;
-	HashMap<String, VariableInfo> symbols = new HashMap<>();
-	Vector<SymbolTable> children = new Vector<>();
+	HashMap<String, HashMap<IRBlock, IRValue>> symbols = new HashMap<>();
 
 	/// Creates a new symbol table with no children.
-	public SymbolTable() {}
-
-	/// Initializes a new symbol table, with this one as parent.
-	public SymbolTable initializeScope() {
-		SymbolTable child = new SymbolTable();
-		child.parent = this;
-		return child;
-	}
-
-	/// Adds this symbol table to its parent's children list, then returns a reference to said parent.
-	/// If this symbol table is the root, it returns null.
-	public Optional<SymbolTable> finalizeScope() {
-		if (this.parent != null) {
-			this.parent.children.add(this);
-		}
-		return Optional.ofNullable(this.parent);
+	public SymbolTable() {
 	}
 
 	/// Inserts a new symbol in the table.
-	public void insert(String name, IRValue value) {
-		this.symbols.put(name, new VariableInfo(value));
+	public void insert(String name, IRBlock block, IRValue value) {
+		if (this.symbols.get(name) == null) {
+			this.symbols.put(name, new HashMap<>());
+		}
+		this.symbols.get(name).put(block, value);
 	}
 
 	/// Looks up the information of a symbol in the table.
-	public Optional<VariableInfo> lookup(String name) {
-		if (this.symbols.containsKey(name)) {
-			return Optional.ofNullable(this.symbols.get(name));
+	public IRValue lookup(String name, IRBlock block) {
+		if (this.symbols.get(name) == null) {
+			throw new RuntimeException("Tried to lookup variable " + name + " which has never been defined previously");
 		}
-		if (this.parent != null) {
-			return parent.lookup(name);
-		}
-		return Optional.empty();
-	}
 
-	/// Pretty printing of the symbol table in its current form
-	public String toString() {
-		if (this.parent == null) {
-			return this.toStringInner(0);
+		IRValue result;
+		if (this.symbols.get(name).get(block) != null) {
+			// Found result in table
+			result = this.symbols.get(name).get(block);
+		} else if (!block.isSealed()) {
+			// Incomplete CFG
+			IRPhiOperation phi = new IRPhiOperation(block);
+			block.addIncompletePhi(name, phi);
+			block.addOperation(phi);
+			result = phi.getResult();
+		} else if (block.getPredecessors().size() == 1) {
+			// Only one predecessor
+			result = this.lookup(name, block.getPredecessors().getFirst());
 		} else {
-			return this.parent.toString();
+			// Break cycle with phi
+			IRPhiOperation phi = new IRPhiOperation(block);
+			this.insert(name, block, phi.getResult());
+
+			// Add the operands to phi
+			for (IRBlock predecessor : block.getPredecessors()) {
+				IRValue pred_value = this.lookup(name, predecessor);
+				phi.addOperand(pred_value);
+			}
+			// Try to remove anything trivial
+			// this.simplifyPhi(phi, name);
+
+			block.addOperation(phi);
+			result = phi.getResult();
 		}
+
+		this.insert(name, block, result);
+		
+		return result;
 	}
 
-	private String toStringInner(int depth) {
-		StringBuilder result = new StringBuilder("-".repeat(depth) + ">\n");
-		for (Entry<String, VariableInfo> entry : this.symbols.entrySet()) {
-			result.append("+" + "-".repeat(depth) + " " + entry.getKey() + " = " + entry.getValue() + '\n');
-		}
-		for (SymbolTable child : this.children) {
-			result.append(child.toStringInner(depth + 1));
-		}
-		return result.toString();
-	}
 }

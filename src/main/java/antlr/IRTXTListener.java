@@ -58,6 +58,30 @@ public interface IRTXTListener extends ParseTreeListener {
 	 */
 	void exitIRADDR(IRTXTParser.IRADDRContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code IRRETURN}
+	 * labeled alternative in {@link IRTXTParser#irType}.
+	 * @param ctx the parse tree
+	 */
+	void enterIRRETURN(IRTXTParser.IRRETURNContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IRRETURN}
+	 * labeled alternative in {@link IRTXTParser#irType}.
+	 * @param ctx the parse tree
+	 */
+	void exitIRRETURN(IRTXTParser.IRRETURNContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IRANY}
+	 * labeled alternative in {@link IRTXTParser#irType}.
+	 * @param ctx the parse tree
+	 */
+	void enterIRANY(IRTXTParser.IRANYContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IRANY}
+	 * labeled alternative in {@link IRTXTParser#irType}.
+	 * @param ctx the parse tree
+	 */
+	void exitIRANY(IRTXTParser.IRANYContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link IRTXTParser#irTop}.
 	 * @param ctx the parse tree
 	 */

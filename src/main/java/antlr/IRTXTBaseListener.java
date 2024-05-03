@@ -67,6 +67,30 @@ public class IRTXTBaseListener implements IRTXTListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterIRRETURN(IRTXTParser.IRRETURNContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIRRETURN(IRTXTParser.IRRETURNContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIRANY(IRTXTParser.IRANYContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIRANY(IRTXTParser.IRANYContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIrTop(IRTXTParser.IrTopContext ctx) { }
 	/**
 	 * {@inheritDoc}

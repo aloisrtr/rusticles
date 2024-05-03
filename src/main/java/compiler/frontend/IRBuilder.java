@@ -2,7 +2,6 @@ package compiler.frontend;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import ir.core.*;
 import ir.terminator.IRCondBr;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -18,7 +17,6 @@ import ir.instruction.IRMulInstruction;
 import ir.instruction.IRSubInstruction;
 import ir.terminator.IRGoto;
 import ir.terminator.IRReturn;
-import ir.terminator.IRTerminator;
 
 public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	IRTopLevel top = null;
@@ -37,17 +35,14 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	/// Translates a type context into the corresponding IRType variant.
 	IRType translateType(TypeContext t) {
-		if (t instanceof IntTypeContext) {
-			return IRType.INT;
-		} else if (t instanceof VoidTypeContext) {
-			return IRType.VOID;
-		} else if (t instanceof BoolTypeContext) {
-			return IRType.BOOL;
-		} else if (t == null) {
-			return IRType.ANY;
-		}
-		return null;
-	}
+        return switch (t) {
+            case IntTypeContext intTypeContext -> IRType.INT;
+            case VoidTypeContext voidTypeContext -> IRType.VOID;
+            case BoolTypeContext boolTypeContext -> IRType.BOOL;
+            case null -> IRType.ANY;
+            default -> null;
+        };
+    }
 
 	/// Visits all functions in the translation unit.
 	@Override
@@ -226,8 +221,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			return new BuilderResult(true, begin, end, new IRValue(IRType.VOID, null));
 		}
 
-		IRBlock entry_else_block = currentFunction.addBlock();
-		currentBlock = entry_else_block;
+        currentBlock = currentFunction.addBlock();
 		BuilderResult else_block = this.visit(ctx.elseBody);
 
 		if (else_block.entry == null) {
@@ -274,7 +268,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	@Override
 	public BuilderResult visitForExpr(ForExprContext ctx) {
-		BuilderResult begin = this.visit(ctx.begin);
+		// BuilderResult begin = this.visit(ctx.begin);
 		// BuilderResult end = this.visit(ctx.end);
 		// BuilderResult body = this.visit(ctx.body);
 		// this.symbolTable.insert(ctx.name.getText(), begin.value);
@@ -298,16 +292,16 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		// We link everything nice and tidy then.
 		IRBlock exit = this.currentFunction.addBlock();
-		header.addTerminator(new IRCondBr(header_build.value, body_build.entry, exit));
 		body_build.exit.addTerminator(new IRGoto(header));
 		header.seal(this.symbolTable);
 
 		// Seal of body and exit block
+		header.addTerminator(new IRCondBr(header_build.value, body_build.entry, exit));
 		body_build.entry.seal(this.symbolTable);
 		body_build.exit.seal(this.symbolTable);
 		exit.seal(this.symbolTable);
-
 		this.currentBlock = exit;
+
 		return new BuilderResult(true, entry, exit, new IRValue(IRType.VOID, null));
 	}
 

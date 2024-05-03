@@ -40,7 +40,6 @@ public class SymbolTable {
 			// Incomplete CFG
 			IRPhiOperation phi = new IRPhiOperation(block);
 			block.addIncompletePhi(name, phi);
-			block.addOperation(phi);
 			result = phi.getResult();
 		} else if (block.getPredecessors().size() == 1) {
 			// Only one predecessor

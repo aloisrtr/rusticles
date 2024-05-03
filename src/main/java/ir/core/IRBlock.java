@@ -72,6 +72,7 @@ public class IRBlock implements IRVisitableObject {
 
     public void addIncompletePhi(String name, IRPhiOperation phi) {
         this.incompletePhi.put(name, phi);
+        this.addOperation(phi);
     }
     public void seal(SymbolTable table) {
         // If already sealed, do nothing

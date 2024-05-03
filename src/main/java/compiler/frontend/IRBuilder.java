@@ -2,7 +2,6 @@ package compiler.frontend;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import ir.core.*;
 import ir.terminator.IRCondBr;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -20,7 +19,6 @@ import ir.instruction.IRMulInstruction;
 import ir.instruction.IRSubInstruction;
 import ir.terminator.IRGoto;
 import ir.terminator.IRReturn;
-import ir.terminator.IRTerminator;
 
 public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	IRTopLevel top = null;
@@ -39,17 +37,14 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	/// Translates a type context into the corresponding IRType variant.
 	IRType translateType(TypeContext t) {
-		if (t instanceof IntTypeContext) {
-			return IRType.INT;
-		} else if (t instanceof VoidTypeContext) {
-			return IRType.VOID;
-		} else if (t instanceof BoolTypeContext) {
-			return IRType.BOOL;
-		} else if (t == null) {
-			return IRType.ANY;
-		}
-		return null;
-	}
+        return switch (t) {
+            case IntTypeContext intTypeContext -> IRType.INT;
+            case VoidTypeContext voidTypeContext -> IRType.VOID;
+            case BoolTypeContext boolTypeContext -> IRType.BOOL;
+            case null -> IRType.ANY;
+            default -> null;
+        };
+    }
 
 	/// Visits all functions in the translation unit.
 	@Override
@@ -228,8 +223,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			return new BuilderResult(true, begin, end, new IRValue(IRType.VOID, null));
 		}
 
-		IRBlock entry_else_block = currentFunction.addBlock();
-		currentBlock = entry_else_block;
+        currentBlock = currentFunction.addBlock();
 		BuilderResult else_block = this.visit(ctx.elseBody);
 
 		if (else_block.entry == null) {
@@ -328,6 +322,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		IRBlock exit = this.currentFunction.addBlock();
 		body_build.exit.addTerminator(new IRGoto(header));
 		header.seal(this.symbolTable);
+
+		// Seal of body and exit block
 		header.addTerminator(new IRCondBr(header_build.value, body_build.entry, exit));
 		body_build.entry.seal(this.symbolTable);
 		body_build.exit.seal(this.symbolTable);
@@ -519,12 +515,12 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			throw new RuntimeException("Type inference failed: " + a + " is of type " + a.type + " while " + b + " is of type" + IRType.VOID);
 		}
 		
-		if (a.type == IRType.ANY) {
+		if (a.type == IRType.ANY || a.type == IRType.RETURN) {
 			a.type = b.type;
-		} else if (b.type == IRType.ANY) {
+		} else if (b.type == IRType.ANY || b.type == IRType.RETURN) {
 			b.type = a.type;
 		} else if (a.type != b.type) {
-			throw new RuntimeException("Type inference failed: " + a + " is of type " + a.type + " while " + b + " is of type" + b.type);
+			throw new RuntimeException("Type inference failed: " + a + " is of type " + a.type + " while " + b + " is of type " + b.type);
 		}
 	}
 	private void typeInference(IRType expected, IRValue actual) {

@@ -1,4 +1,2 @@
-fn main() : int {
-    return 4;
-    3
+fn main() : void {
 }

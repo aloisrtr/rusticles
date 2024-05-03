@@ -1,3 +1,3 @@
-fn main(): int {
-	1 + 3 * 4
+fn main(): void {
+    let a : int = 4;
 }

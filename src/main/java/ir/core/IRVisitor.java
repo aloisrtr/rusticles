@@ -45,4 +45,7 @@ public abstract class IRVisitor<T> {
 
     public abstract T visitCompareGtInstruction(IRCompareGtInstruction c);
 
+    public abstract T visitCompareEqInstruction(IRCompareEqInstruction c);
+
+    public abstract T visitCompareNeqInstruction(IRCompareNeqInstruction c);
 }

@@ -22,7 +22,8 @@ public class IRPhiOperation extends IROperation {
             super.addResult(v.type);
         } else if (v.type == IRType.ANY) {
             v.type = super.getResult().type;
-        } else if (super.getResult().type != v.type) {
+        }
+        if (super.getResult().type != v.type) {
             throw new RuntimeException("Tried assigning a value of an incorrect type to a variable: expected " + super.getResult().type + " but got " + v.type);
         }
         super.addOperand(v);

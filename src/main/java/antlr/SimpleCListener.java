@@ -226,6 +226,30 @@ public interface SimpleCListener extends ParseTreeListener {
 	 */
 	void exitLthExpr(SimpleCParser.LthExprContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code EqExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqExpr(SimpleCParser.EqExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code EqExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqExpr(SimpleCParser.EqExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NeqExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNeqExpr(SimpleCParser.NeqExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NeqExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNeqExpr(SimpleCParser.NeqExprContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code GthExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree

@@ -6,4 +6,5 @@ fn testif(a: int) : int {
     } else {
         42
     };
+    a
 }

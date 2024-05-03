@@ -139,6 +139,20 @@ public interface SimpleCVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLthExpr(SimpleCParser.LthExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code EqExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEqExpr(SimpleCParser.EqExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code NeqExpr}
+	 * labeled alternative in {@link SimpleCParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNeqExpr(SimpleCParser.NeqExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code GthExpr}
 	 * labeled alternative in {@link SimpleCParser#expr}.
 	 * @param ctx the parse tree

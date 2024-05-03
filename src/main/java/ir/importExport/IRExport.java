@@ -12,8 +12,10 @@ import ir.core.IRVisitableObject;
 import ir.core.IRVisitor;
 import ir.instruction.IRAddInstruction;
 import ir.instruction.IRAllocaInstruction;
+import ir.instruction.IRCompareEqInstruction;
 import ir.instruction.IRCompareGtInstruction;
 import ir.instruction.IRCompareLtInstruction;
+import ir.instruction.IRCompareNeqInstruction;
 import ir.instruction.IRConstantInstruction;
 import ir.instruction.IRDivInstruction;
 import ir.instruction.IRFunctionCallInstruction;
@@ -185,6 +187,17 @@ public class IRExport extends IRVisitor<String> {
 	@Override
 	public String visitCompareGtInstruction(IRCompareGtInstruction c) {
 		return getStringOperation(c, "gt");
+
+	}
+	
+	@Override
+	public String visitCompareEqInstruction(IRCompareEqInstruction c) {
+		return getStringOperation(c, "eg");
+	}
+
+	@Override
+	public String visitCompareNeqInstruction(IRCompareNeqInstruction c) {
+		return getStringOperation(c, "neq");
 
 	}
 

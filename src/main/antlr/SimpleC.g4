@@ -27,10 +27,10 @@ expr :
 | name=IDENTIFIER '(' (args += expr ',')* args += expr? ')'       #FunCallExpr
 // Control flow
 | ifExpr                                                          #IfstatementExpr
-| 'for' name=IDENTIFIER 'in' begin=expr '..' end=expr body=block  #ForExpr
+| 'for' update=block 'until' cond=expr body=block                 #ForExpr
 | 'while' '(' condition=expr ')' body=block                       #WhileExpr
 // Non-control flow expressions
-| 'let ' name=IDENTIFIER (':' t=type)? '=' body=expr                 #VarDefExpr
+| 'let ' name=IDENTIFIER (':' t=type)? '=' body=expr              #VarDefExpr
 | INTEGER 					                                      #IntExpr
 | name=IDENTIFIER 				                                  #IdExpr
 | '-' body=expr					                                  #NegExpr
@@ -40,6 +40,8 @@ expr :
 | lhs=expr '/' rhs=expr 	                                      #DivExpr
 | lhs=expr '<' rhs=expr 	                                      #LthExpr
 | lhs=expr '>' rhs=expr 	                                      #GthExpr
+| lhs=expr '==' rhs=expr                                          #EqExpr
+| lhs=expr '!=' rhs=expr                                          #NeqExpr
 | '(' body=expr ')'                                               #ParenExpr;
 
 ifExpr : 'if' '(' cond=expr ')' ifBody=block ('else' (elseBody=ifFollowUp))? ;

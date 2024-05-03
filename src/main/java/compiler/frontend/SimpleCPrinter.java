@@ -83,11 +83,9 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	@Override
 	public String visitForExpr(SimpleCParser.ForExprContext ctx) {
         return "for " +
-				ctx.name.getText() +
-                " in " +
-				visit(ctx.begin) +
-                ".." +
-                visit(ctx.end) +
+				visit(ctx.update) +
+                " until " +
+				visit(ctx.cond) + " " +
                 visit(ctx.body);
 	}
 
@@ -170,5 +168,15 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	@Override
 	public String visitGthExpr(SimpleCParser.GthExprContext ctx) {
 		return visit(ctx.lhs) + " > " + visit(ctx.rhs);
+	}
+	
+	@Override
+	public String visitEqExpr(SimpleCParser.EqExprContext ctx) {
+		return visit(ctx.lhs) + " == " + visit(ctx.rhs);
+	}
+
+	@Override
+	public String visitNeqExpr(SimpleCParser.NeqExprContext ctx) {
+		return visit(ctx.lhs) + " != " + visit(ctx.rhs);
 	}
 }

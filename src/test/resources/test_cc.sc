@@ -1,7 +1,8 @@
 fn loopfor() : int {
     let max : int = 10;
-    for i in 0..max {
-        print(i);
+    let i = 0;
+    for { i = i + 1 } until i == max {
+        i
     };
     0
 }

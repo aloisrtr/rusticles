@@ -9,8 +9,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import antlr.SimpleCBaseVisitor;
 import antlr.SimpleCParser.*;
 import ir.instruction.IRAddInstruction;
+import ir.instruction.IRCompareEqInstruction;
 import ir.instruction.IRCompareGtInstruction;
 import ir.instruction.IRCompareLtInstruction;
+import ir.instruction.IRCompareNeqInstruction;
 import ir.instruction.IRConstantInstruction;
 import ir.instruction.IRDivInstruction;
 import ir.instruction.IRFunctionCallInstruction;
@@ -274,11 +276,37 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 	@Override
 	public BuilderResult visitForExpr(ForExprContext ctx) {
-		BuilderResult begin = this.visit(ctx.begin);
-		// BuilderResult end = this.visit(ctx.end);
-		// BuilderResult body = this.visit(ctx.body);
-		// this.symbolTable.insert(ctx.name.getText(), begin.value);
-		return new BuilderResult(true, null, null, new IRValue(IRType.VOID, null));
+		IRBlock entry = this.currentBlock;
+		this.currentBlock.seal(this.symbolTable);
+
+		// Our header is the one going to check if the loop should continue or not.
+		IRBlock header = this.currentFunction.addBlock();
+		entry.addTerminator(new IRGoto(header));
+		this.currentBlock = header;
+		BuilderResult header_build = this.visit(ctx.cond);
+
+		// Visiting the body then creates its entry and exit nodes.
+		BuilderResult body_build = this.visit(ctx.body);
+
+		// Patch our update code at the end of the body
+		BuilderResult update_build = this.visit(ctx.update);
+
+		// We link everything nice and tidy then.
+		IRBlock exit = this.currentFunction.addBlock();
+		body_build.exit.addTerminator(new IRGoto(update_build.entry));
+		update_build.exit.addTerminator(new IRGoto(header));
+		header.addTerminator(new IRCondBr(header_build.value, body_build.entry, exit));
+		
+		header.seal(this.symbolTable);
+		body_build.entry.seal(this.symbolTable);
+		body_build.exit.seal(this.symbolTable);
+		update_build.entry.seal(this.symbolTable);
+		update_build.exit.seal(this.symbolTable);
+
+		exit.seal(this.symbolTable);
+		this.currentBlock = exit;
+
+		return new BuilderResult(true, header, exit, new IRValue(IRType.VOID, null));
 	}
 
 	@Override
@@ -306,7 +334,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		exit.seal(this.symbolTable);
 		this.currentBlock = exit;
 
-		return new BuilderResult(true, entry, exit, new IRValue(IRType.VOID, null));
+		return new BuilderResult(true, header, exit, new IRValue(IRType.VOID, null));
 	}
 
 	/****************************************************************************
@@ -448,6 +476,32 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		this.typeInference(lhs.value, rhs.value);
 
 		IRCompareGtInstruction instr = new IRCompareGtInstruction(lhs.value, rhs.value);
+		currentBlock.addOperation(instr);
+
+		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());
+	}
+	
+	@Override
+	public BuilderResult visitEqExpr(EqExprContext ctx) {
+		BuilderResult lhs = this.visit(ctx.lhs);
+		BuilderResult rhs = this.visit(ctx.rhs);
+
+		this.typeInference(lhs.value, rhs.value);
+
+		IRCompareEqInstruction instr = new IRCompareEqInstruction(lhs.value, rhs.value);
+		currentBlock.addOperation(instr);
+
+		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());
+	}
+
+	@Override
+	public BuilderResult visitNeqExpr(NeqExprContext ctx) {
+		BuilderResult lhs = this.visit(ctx.lhs);
+		BuilderResult rhs = this.visit(ctx.rhs);
+
+		this.typeInference(lhs.value, rhs.value);
+
+		IRCompareNeqInstruction instr = new IRCompareNeqInstruction(lhs.value, rhs.value);
 		currentBlock.addOperation(instr);
 
 		return new BuilderResult(lhs.hasBlock || rhs.hasBlock, null, null, instr.getResult());

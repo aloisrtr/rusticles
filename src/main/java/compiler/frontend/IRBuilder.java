@@ -461,12 +461,12 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			throw new RuntimeException("Type inference failed: " + a + " is of type " + a.type + " while " + b + " is of type" + IRType.VOID);
 		}
 		
-		if (a.type == IRType.ANY) {
+		if (a.type == IRType.ANY || a.type == IRType.RETURN) {
 			a.type = b.type;
-		} else if (b.type == IRType.ANY) {
+		} else if (b.type == IRType.ANY || b.type == IRType.RETURN) {
 			b.type = a.type;
 		} else if (a.type != b.type) {
-			throw new RuntimeException("Type inference failed: " + a + " is of type " + a.type + " while " + b + " is of type" + b.type);
+			throw new RuntimeException("Type inference failed: " + a + " is of type " + a.type + " while " + b + " is of type " + b.type);
 		}
 	}
 	private void typeInference(IRType expected, IRValue actual) {

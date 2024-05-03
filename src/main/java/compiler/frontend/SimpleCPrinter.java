@@ -171,4 +171,9 @@ public class SimpleCPrinter extends SimpleCBaseVisitor<String> {
 	public String visitGthExpr(SimpleCParser.GthExprContext ctx) {
 		return visit(ctx.lhs) + " > " + visit(ctx.rhs);
 	}
+
+	public String visitParenExpr(SimpleCParser.ParenExprContext cxt) {
+		return "(" + visit(cxt.body) + ")";
+	}
 }
+

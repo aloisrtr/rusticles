@@ -77,7 +77,8 @@ public class IRBlock implements IRVisitableObject {
     public void seal(SymbolTable table) {
         // If already sealed, do nothing
         if (this.isSealed) {
-            throw new RuntimeException("Block already sealed");
+            return;
+            // throw new RuntimeException("Block already sealed");
         }
 
         // Seal all incomplete phi operations in the block

@@ -95,7 +95,11 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 				if (res.value.type != currentFunction.getReturnType() && res.value.type != IRType.RETURN) {
 					throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of " + currentFunction.getReturnType() + ", but returned type " + res.value.type);
 				}
-				res.exit.addTerminator(new IRReturn(res.value));
+				if (res.value.getType() == IRType.VOID) {
+					currentFunction.getBlocks().getLast().addTerminator(new IRReturn(null));
+				} else if (res.value.getType() != IRType.RETURN) {
+					currentFunction.getBlocks().getLast().addTerminator(new IRReturn(res.value));
+				}
 			} else if (currentFunction.getReturnType() != null && res.value != null) {
 				throw new RuntimeException("Function " + currentFunction.getName() + " expects a return type of VOID, but returned type " + res.value.type);
 			} else if (res.exit.getTerminator() == null) {
@@ -130,11 +134,13 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			}
 		}
 
-		// Handle the return value of the block if any.
-		IRValue returned = null;
+		// Handle the return value of the block.
+		IRValue returned;
 		if (ctx.lastexpr != null) {
 			BuilderResult res = this.visit(ctx.lastexpr);
 			returned = res.value;
+		} else {
+			returned = new IRValue(IRType.VOID, null);
 		}
 
 		// We do have at least one block, our entry and current block, and a possible value.
@@ -150,6 +156,7 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 	@Override
 	public BuilderResult visitReturnExpr(ReturnExprContext ctx) {
 		BuilderResult res = this.visit(ctx.body);
+
 		IRReturn newInstr = new IRReturn(res.value);
 		currentBlock.addOperation(newInstr);
 
@@ -218,10 +225,9 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 			return new BuilderResult(true, begin, end, new IRValue(IRType.VOID, null));
 		}
 
-		// IRBlock entry_else_block = currentFunction.addBlock();
-		// currentBlock = entry_else_block;
+		IRBlock entry_else_block = currentFunction.addBlock();
+		currentBlock = entry_else_block;
 		BuilderResult else_block = this.visit(ctx.elseBody);
-		// else_block.entry = entry_else_block;
 
 		if (else_block.entry == null) {
 			throw new RuntimeException("Else block is not empty but the entry block is null");
@@ -238,7 +244,6 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 
 		// Link if to the End block
 		if_block.exit.addTerminator(gotoEnd);
-
 
 		// Link else to the End block
 		else_block.exit.addTerminator(gotoEnd);

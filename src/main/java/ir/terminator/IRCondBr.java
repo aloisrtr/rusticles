@@ -9,8 +9,8 @@ import java.util.List;
 public class IRCondBr extends IRTerminator {
 
     // IRCondBr
-    // Two successors, an operands to verify whether we take first succ (if true) or
-    // second succ (if false)
+    // One or two successors, an operands to verify whether we take first succ (if true) or
+    // second succ/continue (if false)
 
     public IRCondBr(IRValue cond, IRBlock ifTrue, IRBlock ifFalse) {
         super(List.of(ifTrue, ifFalse));

@@ -10,7 +10,6 @@ import compiler.frontend.SymbolTable;
 import ir.terminator.IRTerminator;
 
 public class IRBlock implements IRVisitableObject {
-
     private final List<IROperation> operations; /*
      * !< List of operations inside the block. Last one should be a IRTerminator
      */
@@ -75,10 +74,12 @@ public class IRBlock implements IRVisitableObject {
         this.incompletePhi.put(name, phi);
     }
     public void seal(SymbolTable table) {
+        // If already sealed, do nothing
         if (this.isSealed) {
-            return;
+            throw new RuntimeException("Block already sealed");
         }
-        
+
+        // Seal all incomplete phi operations in the block
         for (Entry<String, IRPhiOperation> entry : this.incompletePhi.entrySet()) {
             String variable = entry.getKey();
             IRPhiOperation phi = entry.getValue();

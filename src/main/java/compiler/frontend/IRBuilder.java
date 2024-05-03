@@ -301,6 +301,8 @@ public class IRBuilder extends SimpleCBaseVisitor<BuilderResult> {
 		header.addTerminator(new IRCondBr(header_build.value, body_build.entry, exit));
 		body_build.exit.addTerminator(new IRGoto(header));
 		header.seal(this.symbolTable);
+
+		// Seal of body and exit block
 		body_build.entry.seal(this.symbolTable);
 		body_build.exit.seal(this.symbolTable);
 		exit.seal(this.symbolTable);
